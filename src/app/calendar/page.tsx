@@ -75,90 +75,121 @@ export default function CalendarPage() {
     const getEvents = (d: Date) => events.filter(e => isSameDay(e.date, d));
 
     return (
-        <div className="min-h-screen bg-[#0a0a0f] pb-28 md:pb-12 flex flex-col items-center" style={{ paddingTop: '6rem' }}>
-            <div className="w-full max-w-md mx-auto px-6">
-                {/* Header - Centered */}
-                <div className="text-center mb-10">
-                    <h1 className="text-2xl font-semibold text-white mb-2">Calendar</h1>
-                    <p className="text-white/40 text-sm">Track your special moments</p>
-                </div>
+        <div className="min-h-screen bg-[#0a0a0f] pb-12 flex flex-col items-center pt-48 md:pt-64">
+            <div className="w-full max-w-6xl mx-auto px-6">
 
-                {/* Month Navigator - Centered */}
-                <div className="flex items-center justify-center gap-6 mb-8">
-                    <button
-                        onClick={() => setMonth(subMonths(month, 1))}
-                        className="w-10 h-10 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] text-white/50 hover:text-white flex items-center justify-center transition-all border border-white/[0.06]"
-                    >
-                        ←
-                    </button>
-                    <h2 className="text-lg font-medium text-white min-w-[160px] text-center">{format(month, 'MMMM yyyy')}</h2>
-                    <button
-                        onClick={() => setMonth(addMonths(month, 1))}
-                        className="w-10 h-10 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] text-white/50 hover:text-white flex items-center justify-center transition-all border border-white/[0.06]"
-                    >
-                        →
-                    </button>
-                </div>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                    {/* Left Column: Calendar Grid (Takes up 2/3 space) */}
+                    <div className="lg:col-span-2 space-y-8">
+                        {/* Header & Controls */}
+                        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                            <div>
+                                <h1 className="text-3xl font-bold text-white mb-1">Calendar</h1>
+                                <p className="text-white/40 text-sm">Track your special moments</p>
+                            </div>
 
-                {/* Day Names - Centered */}
-                <div className="grid grid-cols-7 gap-1 mb-2">
-                    {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map((d, i) => (
-                        <div key={i} className="text-center text-white/30 text-[10px] uppercase tracking-wider py-2 font-medium">{d}</div>
-                    ))}
-                </div>
+                            <div className="flex items-center bg-[#18181b] p-1 rounded-xl border border-white/10">
+                                <button
+                                    onClick={() => setMonth(subMonths(month, 1))}
+                                    className="w-9 h-9 rounded-lg hover:bg-white/10 text-white/50 hover:text-white flex items-center justify-center transition-all"
+                                >
+                                    ←
+                                </button>
+                                <h2 className="text-sm font-medium text-white w-32 text-center">{format(month, 'MMMM yyyy')}</h2>
+                                <button
+                                    onClick={() => setMonth(addMonths(month, 1))}
+                                    className="w-9 h-9 rounded-lg hover:bg-white/10 text-white/50 hover:text-white flex items-center justify-center transition-all"
+                                >
+                                    →
+                                </button>
+                            </div>
+                        </div>
 
-                {/* Calendar Grid */}
-                <div className="grid grid-cols-7 gap-1 mb-10">
-                    {Array.from({ length: startDay }).map((_, i) => <div key={`e${i}`} />)}
-                    {days.map(day => {
-                        const dayEvents = getEvents(day);
-                        const hasEvent = dayEvents.length > 0;
-                        const hasSpecial = dayEvents.some(e => e.isSpecial);
-                        const today = isToday(day);
+                        {/* Calendar Board */}
+                        <div className="bg-[#121217] border border-white/[0.08] rounded-3xl p-6 shadow-2xl">
+                            {/* Day Names */}
+                            <div className="grid grid-cols-7 gap-1 mb-4 border-b border-white/[0.05] pb-4">
+                                {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map((d, i) => (
+                                    <div key={i} className="text-center text-white/30 text-xs uppercase tracking-wider font-semibold">{d}</div>
+                                ))}
+                            </div>
 
-                        return (
-                            <button
-                                key={day.toISOString()}
-                                onClick={() => setSelectedDate(day)}
-                                className={`aspect-square rounded-xl text-sm font-medium flex flex-col items-center justify-center relative transition-all ${today
-                                    ? 'bg-white text-black'
-                                    : 'text-white/60 hover:bg-white/[0.05] hover:text-white'
-                                    } ${hasSpecial ? 'ring-2 ring-rose-400/50 ring-offset-1 ring-offset-[#0a0a0f]' : ''}`}
-                            >
-                                {format(day, 'd')}
-                                {hasEvent && !today && (
-                                    <span className="absolute bottom-1.5 w-1 h-1 rounded-full bg-white/40"></span>
-                                )}
-                            </button>
-                        );
-                    })}
-                </div>
+                            {/* Calendar Days */}
+                            <div className="grid grid-cols-7 gap-1">
+                                {Array.from({ length: startDay }).map((_, i) => <div key={`e${i}`} />)}
+                                {days.map(day => {
+                                    const dayEvents = getEvents(day);
+                                    const hasEvent = dayEvents.length > 0;
+                                    const hasSpecial = dayEvents.some(e => e.isSpecial);
+                                    const today = isToday(day);
 
-                {/* Special Dates */}
-                {events.filter(e => e.isSpecial).length > 0 && (
-                    <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-5">
-                        <h3 className="text-white/40 text-xs font-medium uppercase tracking-[0.1em] mb-4">Special Dates</h3>
-                        <div className="space-y-3">
-                            {events.filter(e => e.isSpecial).map(e => (
-                                <div key={e.id} className="flex items-center justify-between group">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-8 h-8 rounded-lg bg-rose-500/10 flex items-center justify-center">
-                                            <span className="text-sm">💕</span>
-                                        </div>
-                                        <div>
-                                            <p className="text-white/80 text-sm font-medium">{e.title}</p>
-                                            <p className="text-white/30 text-xs">{format(e.date, 'MMM d, yyyy')}</p>
-                                        </div>
-                                    </div>
-                                    <button
-                                        onClick={() => deleteEvent(e.id)}
-                                        className="text-white/20 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all"
-                                    >✕</button>
-                                </div>
-                            ))}
+                                    return (
+                                        <button
+                                            key={day.toISOString()}
+                                            onClick={() => setSelectedDate(day)}
+                                            className={`aspect-square rounded-xl text-sm font-medium flex flex-col items-center justify-center relative transition-all group ${today
+                                                ? 'bg-white text-black shadow-lg shadow-white/10'
+                                                : 'text-white/60 hover:bg-white/[0.05] hover:text-white'
+                                                } ${hasSpecial ? 'ring-1 ring-rose-500/50 bg-rose-500/10 text-rose-200' : ''}`}
+                                        >
+                                            <span className={`z-10 ${today ? 'font-bold' : ''}`}>{format(day, 'd')}</span>
+
+                                            {/* Indicators */}
+                                            <div className="flex gap-0.5 mt-1">
+                                                {hasEvent && !today && (
+                                                    <span className={`w-1 h-1 rounded-full ${hasSpecial ? 'bg-rose-500' : 'bg-white/30 group-hover:bg-white/60'}`}></span>
+                                                )}
+                                            </div>
+                                        </button>
+                                    );
+                                })}
+                            </div>
                         </div>
                     </div>
-                )}
+
+                    {/* Right Column: Special Dates & Upcoming (Takes up 1/3 space) */}
+                    <div className="lg:col-span-1 space-y-6">
+                        {/* Upcoming / Special Section */}
+                        <div className="bg-[#121217] border border-white/[0.08] rounded-3xl p-6 h-full min-h-[500px]">
+                            <h3 className="text-white text-lg font-semibold mb-6 flex items-center gap-2">
+                                <span className="text-rose-400">💕</span>
+                                Special Dates
+                            </h3>
+
+                            {events.filter(e => e.isSpecial).length > 0 ? (
+                                <div className="space-y-4">
+                                    {events.filter(e => e.isSpecial)
+                                        .sort((a, b) => a.date.getTime() - b.date.getTime())
+                                        .map(e => (
+                                            <div key={e.id} className="relative group bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.06] rounded-2xl p-4 transition-all">
+                                                <div className="flex items-start gap-4">
+                                                    <div className="flex flex-col items-center justify-center bg-[#1a1a20] rounded-xl w-12 h-12 border border-white/10 shrink-0">
+                                                        <span className="text-rose-500 text-xs font-bold uppercase">{format(e.date, 'MMM')}</span>
+                                                        <span className="text-white text-lg font-bold leading-none">{format(e.date, 'd')}</span>
+                                                    </div>
+                                                    <div className="flex-1 min-w-0">
+                                                        <p className="text-white/90 font-medium truncate">{e.title}</p>
+                                                        <p className="text-white/40 text-xs mt-0.5">{format(e.date, 'EEEE, yyyy')}</p>
+                                                    </div>
+                                                    <button
+                                                        onClick={(ev) => { ev.stopPropagation(); deleteEvent(e.id); }}
+                                                        className="opacity-0 group-hover:opacity-100 text-white/20 hover:text-red-400 transition-all p-1"
+                                                    >✕</button>
+                                                </div>
+                                            </div>
+                                        ))}
+                                </div>
+                            ) : (
+                                <div className="text-center py-10">
+                                    <div className="w-16 h-16 bg-white/[0.03] rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <span className="text-2xl grayscale opacity-30">📅</span>
+                                    </div>
+                                    <p className="text-white/30 text-sm">No special dates marked yet.</p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
             </div>
 
             {/* Add Event Modal */}

@@ -80,23 +80,23 @@ export default function NotesPage() {
     }
 
     return (
-        <div className="min-h-screen bg-[#0a0a0f] flex flex-col" style={{ paddingTop: '6rem' }}>
-            {/* Header */}
-            <div className="text-center py-6 mb-2">
-                <h1 className="text-3xl font-bold text-white mb-2 tracking-tight">Love Notes</h1>
-                <p className="text-white/40 text-sm font-medium">Leave sweet messages for each other</p>
+        <div className="h-screen bg-[#0a0a0f] flex flex-col overflow-hidden" style={{ paddingTop: '5rem' }}>
+            {/* Header - Fixed Height */}
+            <div className="text-center py-4 shrink-0 relative z-10 bg-[#0a0a0f]/90 backdrop-blur-sm border-b border-white/[0.03]">
+                <h1 className="text-2xl font-bold text-white mb-1 tracking-tight">Love Notes</h1>
+                <p className="text-white/40 text-xs font-medium">Leave sweet messages for each other</p>
             </div>
 
             {/* Messages Container with vertical demarcation lines (desktop only) */}
-            <div className="flex-1 relative flex justify-center">
+            <div className="flex-1 relative flex justify-center overflow-y-auto scrollbar-hide">
                 {/* Left vertical line - desktop only */}
-                <div className="hidden md:block absolute left-1/2 -translate-x-[320px] top-0 bottom-40 w-px bg-gradient-to-b from-transparent via-white/[0.04] to-transparent" />
+                <div className="hidden md:block absolute left-1/2 -translate-x-[320px] top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-white/[0.04] to-transparent" />
 
                 {/* Right vertical line - desktop only */}
-                <div className="hidden md:block absolute left-1/2 translate-x-[320px] top-0 bottom-40 w-px bg-gradient-to-b from-transparent via-white/[0.04] to-transparent" />
+                <div className="hidden md:block absolute left-1/2 translate-x-[320px] top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-white/[0.04] to-transparent" />
 
                 {/* Messages area */}
-                <div className="w-full max-w-[600px] px-6 pb-48">
+                <div className="w-full max-w-[600px] px-6 pb-4 pt-6">
                     {notes.length === 0 ? (
                         <div className="text-center py-24">
                             <div className="w-20 h-20 mx-auto mb-6 rounded-3xl bg-white/[0.02] border border-white/[0.04] flex items-center justify-center rotate-3">
@@ -113,8 +113,8 @@ export default function NotesPage() {
                                     <div key={note.id} className={`flex ${mine ? 'justify-end' : 'justify-start'} group w-full`}>
                                         <div
                                             className={`relative flex flex-col w-fit min-w-[140px] max-w-[85%] sm:max-w-[75%] ${mine
-                                                    ? 'bg-gradient-to-br from-rose-500/20 to-purple-600/20 border-rose-500/20 hover:border-rose-500/30'
-                                                    : 'bg-white/[0.05] border-white/[0.08] hover:border-white/15'
+                                                ? 'bg-gradient-to-br from-rose-500/20 to-purple-600/20 border-rose-500/20 hover:border-rose-500/30'
+                                                : 'bg-white/[0.05] border-white/[0.08] hover:border-white/15'
                                                 } border rounded-2xl ${mine ? 'rounded-br-sm' : 'rounded-bl-sm'} !px-6 !py-4 transition-all duration-300 shadow-lg shadow-black/20`}
                                         >
                                             <p
@@ -152,35 +152,34 @@ export default function NotesPage() {
                 </div>
             </div>
 
-            {/* Compose - Fixed at bottom, CENTERED */}
-            <div className="fixed bottom-0 left-0 right-0 z-40 bg-gradient-to-t from-[#0a0a0f] via-[#0a0a0f] to-transparent pt-12 pb-8 md:pb-12 flex justify-center pointer-events-none">
-                <div className="w-full max-w-[600px] px-6 pointer-events-auto">
-                    <div className="flex items-end gap-3 bg-[#121217]/80 backdrop-blur-2xl border border-white/10 rounded-3xl p-2.5 shadow-2xl shadow-black/80 transition-transform duration-300 focus-within:scale-[1.02] focus-within:border-white/20 ring-1 ring-white/5">
-                        <textarea
-                            value={newNote}
-                            onChange={e => setNewNote(e.target.value)}
-                            onKeyPress={handleKeyPress}
-                            placeholder="Write a love note..."
-                            className="flex-1 bg-transparent px-4 py-3 min-h-[52px] max-h-[140px] text-white text-[15px] resize-none focus:outline-none placeholder:text-white/20 placeholder:font-medium"
-                            rows={1}
-                            maxLength={500}
-                        />
-                        <button
-                            onClick={sendNote}
-                            disabled={!newNote.trim() || sending}
-                            className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-rose-500 to-purple-600 text-white flex items-center justify-center transition-all duration-300 hover:shadow-lg hover:shadow-rose-500/20 active:scale-95 disabled:opacity-20 disabled:scale-100 disabled:shadow-none shrink-0 group"
-                        >
-                            <svg className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
-                            </svg>
-                        </button>
+            {/* Compose - Static at bottom */}
+            <div className="w-full shrink-0 z-[100] bg-[#050508] border-t border-white/[0.05]">
+                <div className="pb-8 pt-4 md:pb-8 flex justify-center">
+                    <div className="w-full max-w-[600px] px-6">
+                        <div className="flex items-end gap-3 bg-[#121217] border border-white/10 rounded-3xl p-2.5 shadow-xl shadow-black/50 transition-transform duration-300 focus-within:border-white/20 ring-1 ring-white/5">
+                            <textarea
+                                value={newNote}
+                                onChange={e => setNewNote(e.target.value)}
+                                onKeyPress={handleKeyPress}
+                                placeholder="Write a love note..."
+                                className="flex-1 bg-transparent px-4 py-3 min-h-[52px] max-h-[140px] text-white text-[15px] resize-none focus:outline-none placeholder:text-white/20 placeholder:font-medium"
+                                rows={1}
+                                maxLength={500}
+                            />
+                            <button
+                                onClick={sendNote}
+                                disabled={!newNote.trim() || sending}
+                                className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-rose-500 to-purple-600 text-white flex items-center justify-center transition-all duration-300 hover:shadow-lg hover:shadow-rose-500/20 active:scale-95 disabled:opacity-20 disabled:scale-100 disabled:shadow-none shrink-0 group"
+                            >
+                                <svg className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+                                </svg>
+                            </button>
+                        </div>
+                        <p className="text-center text-white/10 text-[10px] font-medium tracking-widest uppercase mt-3">{newNote.length} / 500</p>
                     </div>
-                    <p className="text-center text-white/10 text-[10px] font-medium tracking-widest uppercase mt-3">{newNote.length} / 500</p>
                 </div>
             </div>
-
-            {/* Bottom padding for mobile nav */}
-            <div className="h-24 md:hidden" />
         </div>
     );
 }

@@ -65,18 +65,18 @@ export default function Navigation() {
                     </nav>
 
                     {/* Profile Section - Right */}
-                    <div className="flex justify-end min-w-[200px]">
+                    <div className="flex justify-end shrink-0 ml-auto">
                         <div className="relative">
                             <button
                                 onClick={() => setMenuOpen(!menuOpen)}
-                                className="flex items-center gap-3 pl-3 pr-2 py-1.5 rounded-full hover:bg-white/[0.05] border border-transparent hover:border-white/[0.08] transition-all duration-300"
+                                className="flex items-center gap-3 pl-5 pr-2 py-2 rounded-full bg-[#18181b] border border-white/10 hover:border-white/20 hover:bg-white/[0.08] transition-all duration-300 group shadow-lg shadow-black/20"
                             >
-                                <span className="text-sm font-medium text-white/80 hidden lg:block">
+                                <span className="text-xs font-medium text-white/90 hidden lg:block tracking-wide max-w-[100px] truncate">
                                     {user.displayName?.split(' ')[0]}
                                 </span>
-                                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 p-[1px] shadow-lg shadow-purple-900/40">
-                                    <div className="w-full h-full rounded-full bg-[#121217] flex items-center justify-center">
-                                        <span className="text-white text-xs font-bold bg-gradient-to-br from-white to-white/60 bg-clip-text text-transparent">
+                                <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-rose-500 to-purple-600 p-[1px] shrink-0">
+                                    <div className="w-full h-full rounded-full bg-[#121217] flex items-center justify-center group-hover:bg-transparent transition-colors duration-300">
+                                        <span className="text-white text-[10px] font-bold group-hover:scale-110 transition-transform">
                                             {user.displayName?.[0] || 'U'}
                                         </span>
                                     </div>
@@ -86,16 +86,39 @@ export default function Navigation() {
                             {menuOpen && (
                                 <>
                                     <div className="fixed inset-0 z-40 cursor-default" onClick={() => setMenuOpen(false)} />
-                                    <div className="absolute right-0 top-full mt-4 w-64 bg-[#121217]/95 backdrop-blur-2xl border border-white/[0.08] rounded-2xl shadow-2xl shadow-black/80 overflow-hidden z-50 transform origin-top-right transition-all">
-                                        <div className="px-6 py-5 border-b border-white/[0.06] bg-white/[0.02]">
-                                            <p className="text-white text-sm font-semibold truncate">{user.displayName}</p>
-                                            <p className="text-white/40 text-xs truncate mt-1.5">{user.email}</p>
+                                    <div className="absolute right-0 top-full mt-4 w-72 bg-[#121217] border border-white/[0.08] rounded-2xl shadow-2xl shadow-black/80 overflow-hidden z-50 transform origin-top-right transition-all ring-1 ring-white/5">
+                                        {/* User Header */}
+                                        <div className="relative overflow-hidden px-6 py-6 border-b border-white/[0.06]">
+                                            <div className="absolute inset-0 bg-gradient-to-br from-rose-500/10 to-purple-600/10" />
+                                            <div className="relative z-10 flex items-center gap-4">
+                                                <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-rose-500 to-purple-600 p-[1px]">
+                                                    <div className="w-full h-full rounded-full bg-[#121217] flex items-center justify-center">
+                                                        <span className="text-white text-lg font-bold">{user.displayName?.[0] || 'U'}</span>
+                                                    </div>
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <p className="text-white text-base font-semibold truncate">{user.displayName}</p>
+                                                    <p className="text-white/40 text-xs truncate">{user.email}</p>
+                                                </div>
+                                            </div>
                                         </div>
+
+                                        {/* Menu Items */}
                                         <div className="p-2 space-y-0.5">
+                                            <button className="w-full px-4 py-3 text-left rounded-xl hover:bg-white/[0.05] text-sm text-white/70 hover:text-white transition-colors flex items-center gap-3 group">
+                                                <span className="p-1.5 rounded-lg bg-white/[0.05] group-hover:bg-white/10 transition-colors">👤</span>
+                                                My Profile
+                                            </button>
+                                            <button className="w-full px-4 py-3 text-left rounded-xl hover:bg-white/[0.05] text-sm text-white/70 hover:text-white transition-colors flex items-center gap-3 group">
+                                                <span className="p-1.5 rounded-lg bg-white/[0.05] group-hover:bg-white/10 transition-colors">⚙️</span>
+                                                Settings
+                                            </button>
+                                            <div className="my-2 border-t border-white/[0.06]" />
                                             <button
                                                 onClick={() => { setMenuOpen(false); signOut(); }}
-                                                className="w-full px-4 py-3 text-left rounded-xl hover:bg-white/[0.05] text-sm text-rose-400/90 hover:text-rose-400 transition-colors flex items-center gap-3 font-medium"
+                                                className="w-full px-4 py-3 text-left rounded-xl hover:bg-white/[0.05] text-sm text-rose-400 hover:text-rose-300 transition-colors flex items-center gap-3 group font-medium"
                                             >
+                                                <span className="p-1.5 rounded-lg bg-rose-500/10 group-hover:bg-rose-500/20 transition-colors text-rose-500">🚪</span>
                                                 Sign out
                                             </button>
                                         </div>

@@ -68,97 +68,115 @@ export default function HomePage() {
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } }
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] relative overflow-hidden" style={{ paddingTop: '5rem' }}>
+    <div className="min-h-screen bg-[#0a0a0f] relative overflow-hidden flex flex-col justify-center items-center py-24 md:py-32">
       {/* Aurora Background Effect */}
       <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-purple-900/20 rounded-full blur-[120px] mix-blend-screen animate-blob" />
-        <div className="absolute top-[20%] right-[-10%] w-[50%] h-[50%] bg-rose-900/20 rounded-full blur-[120px] mix-blend-screen animate-blob animation-delay-2000" />
-        <div className="absolute bottom-[-20%] left-[20%] w-[50%] h-[50%] bg-indigo-900/20 rounded-full blur-[120px] mix-blend-screen animate-blob animation-delay-4000" />
+        <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-purple-900/20 rounded-full blur-[120px] mix-blend-screen animate-blob" />
+        <div className="absolute top-[20%] right-[-10%] w-[60%] h-[60%] bg-rose-900/20 rounded-full blur-[120px] mix-blend-screen animate-blob animation-delay-2000" />
+        <div className="absolute bottom-[-20%] left-[20%] w-[60%] h-[60%] bg-indigo-900/20 rounded-full blur-[120px] mix-blend-screen animate-blob animation-delay-4000" />
+        {/* Grain overlay for texture */}
+        <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] mix-blend-overlay"></div>
       </div>
 
       <motion.div
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="relative z-10 max-w-5xl mx-auto px-6 py-12 flex flex-col items-center"
+        className="relative z-10 w-full max-w-7xl mx-auto px-6 flex flex-col items-center"
       >
         {/* Hero Section */}
-        <motion.div variants={itemVariants} className="text-center mb-16">
-          <h2 className="text-rose-500/80 font-medium tracking-[0.2em] text-sm uppercase mb-4">Our Journey</h2>
-          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-white to-white/50">
-            Together
+        <motion.div variants={itemVariants} className="text-center mb-32 relative">
+          <div className="inline-block mb-6 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-md">
+            <span className="text-white/60 text-xs font-medium tracking-[0.2em] uppercase">Est. November 5, 2022</span>
+          </div>
+
+          <h1 className="text-7xl md:text-9xl font-medium text-white mb-8 tracking-tighter leading-none font-serif">
+            <span className="bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-white/40">Our Space</span>
+            <span className="text-rose-500/80 text-6xl md:text-8xl align-top ml-2">.</span>
           </h1>
 
-          <div className="inline-flex gap-8 md:gap-16 items-baseline justify-center">
+          <div className="flex flex-wrap gap-12 md:gap-24 justify-center items-baseline mt-16">
             {[
               { value: years, label: 'Years' },
               { value: months, label: 'Months' },
               { value: days, label: 'Days' }
             ].map((item, i) => (
               <div key={i} className="flex flex-col items-center group cursor-default">
-                <span className="text-4xl md:text-6xl font-light text-white tabular-nums group-hover:scale-110 transition-transform duration-300">
+                <span className="text-6xl md:text-8xl font-light text-white tabular-nums tracking-tight group-hover:scale-110 transition-transform duration-500 ease-out font-serif">
                   {item.value}
                 </span>
-                <span className="text-white/30 text-xs uppercase tracking-widest mt-2">{item.label}</span>
+                <span className="text-white/30 text-xs font-medium uppercase tracking-[0.2em] mt-4 border-t border-white/10 pt-4 w-full text-center">{item.label}</span>
               </div>
             ))}
           </div>
+
           <motion.p
             variants={itemVariants}
-            className="text-white/40 text-sm mt-8 font-light"
+            className="text-white/40 text-sm mt-12 font-medium tracking-wide uppercase"
           >
-            {totalDays.toLocaleString()} days of magic ✨
+            {totalDays.toLocaleString()} days of creating memories together
           </motion.p>
         </motion.div>
 
         {/* Quick Actions Grid */}
         <motion.div
           variants={itemVariants}
-          className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl mb-20"
+          className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-6xl mb-32 px-4"
         >
           {[
             {
               href: '/gallery',
               icon: Camera,
               label: 'Gallery',
-              desc: 'Relive our memories',
-              color: 'from-blue-500/20 to-cyan-500/20',
-              border: 'group-hover:border-cyan-500/30'
+              desc: 'Our timeline',
+              color: 'text-blue-400',
+              bg: 'bg-blue-500/10',
+              border: 'group-hover:border-blue-500/30'
             },
             {
               href: '/calendar',
               icon: Calendar,
               label: 'Calendar',
-              desc: 'Upcoming dates',
-              color: 'from-amber-500/20 to-orange-500/20',
-              border: 'group-hover:border-orange-500/30'
+              desc: 'Our plans',
+              color: 'text-amber-400',
+              bg: 'bg-amber-500/10',
+              border: 'group-hover:border-amber-500/30'
             },
             {
               href: '/notes',
               icon: Heart,
               label: 'Love Notes',
-              desc: 'Sweet messages',
-              color: 'from-rose-500/20 to-pink-500/20',
+              desc: 'Our letters',
+              color: 'text-rose-400',
+              bg: 'bg-rose-500/10',
               border: 'group-hover:border-rose-500/30'
             },
-          ].map((item) => (
-            <Link key={item.href} href={item.href}>
+          ].map((item, i) => (
+            <Link key={item.href} href={item.href} className="block group">
               <motion.div
-                whileHover={{ y: -5, scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className={`group relative h-full bg-white/[0.03] backdrop-blur-md border border-white/[0.08] ${item.border} rounded-3xl p-6 transition-colors duration-300 overflow-hidden`}
+                whileHover={{ y: -5 }}
+                className={`relative h-[280px] bg-[#121217]/50 backdrop-blur-md border border-white/[0.08] ${item.border} rounded-[2rem] p-8 flex flex-col justify-between transition-all duration-500 overflow-hidden hover:bg-white/[0.04] hover:shadow-2xl hover:shadow-black/50`}
               >
-                <div className={`absolute inset-0 bg-gradient-to-br ${item.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
-                <div className="relative z-10 flex flex-col items-center text-center">
-                  <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-white/10 transition-colors">
-                    <item.icon className="w-6 h-6 text-white/80" strokeWidth={1.5} />
+                {/* Hover Gradient Blob */}
+                <div className={`absolute -right-20 -top-20 w-60 h-60 rounded-full ${item.bg} blur-[80px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none`} />
+
+                <div>
+                  <div className={`w-14 h-14 rounded-2xl ${item.bg} flex items-center justify-center mb-6 border border-white/5 group-hover:scale-110 transition-transform duration-500`}>
+                    <item.icon className={`w-7 h-7 text-white`} strokeWidth={1.5} />
                   </div>
-                  <h3 className="text-lg font-medium text-white mb-1">{item.label}</h3>
-                  <p className="text-sm text-white/40 group-hover:text-white/60 transition-colors">{item.desc}</p>
+                  <h3 className="text-3xl font-serif text-white mb-2 tracking-wide">{item.label}</h3>
+                  <p className="text-white/40 font-medium tracking-wide text-sm uppercase">{item.desc}</p>
+                </div>
+
+                <div className="flex items-center justify-between mt-8">
+                  <span className="text-white/30 text-xs font-semibold tracking-widest uppercase group-hover:text-white/60 transition-colors">Explore</span>
+                  <div className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-white group-hover:border-white transition-all duration-300">
+                    <ArrowRight className="w-4 h-4 text-white group-hover:text-black transition-colors" />
+                  </div>
                 </div>
               </motion.div>
             </Link>
@@ -167,30 +185,35 @@ export default function HomePage() {
 
         {/* Recent Memories Section */}
         {recentPhotos.length > 0 && (
-          <motion.div variants={itemVariants} className="w-full max-w-4xl">
-            <div className="flex items-center justify-between mb-6 px-2">
-              <h3 className="text-white/60 font-medium">Recent Moments</h3>
-              <Link href="/gallery" className="text-rose-400 text-sm hover:text-rose-300 flex items-center gap-1 transition-colors group">
-                View Gallery <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          <motion.div variants={itemVariants} className="w-full max-w-6xl border-t border-white/5 pt-24">
+            <div className="flex items-end justify-between mb-12 px-2">
+              <div>
+                <h3 className="text-3xl font-serif text-white mb-2">Recent Moments</h3>
+                <p className="text-white/40">Lately in our life</p>
+              </div>
+              <Link href="/gallery" className="px-6 py-3 rounded-full border border-white/10 hover:bg-white/5 text-sm text-white hover:text-rose-300 transition-all flex items-center gap-2 group">
+                View All Memories <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               {recentPhotos.slice(0, 4).map((photo, i) => (
                 <motion.div
                   key={photo.id}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.4 + (i * 0.1) }}
-                  whileHover={{ scale: 1.05, rotate: i % 2 === 0 ? -2 : 2 }}
-                  className="aspect-[4/5] relative rounded-2xl overflow-hidden bg-white/[0.02] border border-white/[0.06] group cursor-pointer shadow-lg hover:shadow-xl hover:shadow-black/40 hover:z-10 transition-all duration-300"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 * i }}
+                  whileHover={{ y: -5 }}
+                  className="aspect-[3/4] relative rounded-2xl overflow-hidden bg-white/[0.02] border border-white/[0.06] group cursor-pointer shadow-lg hover:shadow-2xl hover:shadow-black/50 transition-all duration-500"
                 >
                   <img
                     src={photo.url}
                     alt="Memory"
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-6">
+                    <p className="text-white text-sm font-medium truncate">{photo.name}</p>
+                  </div>
                 </motion.div>
               ))}
             </div>
@@ -206,7 +229,7 @@ export default function HomePage() {
           100% { transform: translate(0px, 0px) scale(1); }
         }
         .animate-blob {
-          animation: blob 7s infinite;
+          animation: blob 10s infinite alternate;
         }
         .animation-delay-2000 {
           animation-delay: 2s;

@@ -9,10 +9,10 @@ export default function Navigation() {
     const pathname = usePathname();
     const { user, signOut } = useAuth();
     const [scrolled, setScrolled] = useState(false);
-    const [profileOpen, setProfileOpen] = useState(false);
+    const [menuOpen, setMenuOpen] = useState(false);
 
     useEffect(() => {
-        const handleScroll = () => setScrolled(window.scrollY > 20);
+        const handleScroll = () => setScrolled(window.scrollY > 10);
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
@@ -20,128 +20,77 @@ export default function Navigation() {
     if (!user) return null;
 
     const navLinks = [
-        { href: '/', label: 'Home', icon: '🏠' },
-        { href: '/gallery', label: 'Gallery', icon: '📸' },
-        { href: '/calendar', label: 'Calendar', icon: '📅' },
-        { href: '/notes', label: 'Notes', icon: '💌' },
+        { href: '/', label: 'Home' },
+        { href: '/gallery', label: 'Gallery' },
+        { href: '/calendar', label: 'Calendar' },
+        { href: '/notes', label: 'Notes' },
     ];
-
-    const firstName = user.displayName?.split(' ')[0] || 'You';
 
     return (
         <>
-            {/* Desktop Navigation - Netflix/Portfolio inspired */}
-            <nav className={`hidden md:block fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled
-                    ? 'bg-[#0a0a0f]/95 backdrop-blur-2xl shadow-2xl shadow-black/40'
-                    : 'bg-gradient-to-b from-[#0a0a0f] via-[#0a0a0f]/80 to-transparent'
+            {/* Desktop Navigation - Linear/Notion inspired */}
+            <header className={`hidden md:block fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled
+                    ? 'bg-[#0a0a0f]/80 backdrop-blur-xl border-b border-white/[0.06]'
+                    : 'bg-transparent'
                 }`}>
-                <div className="max-w-7xl mx-auto px-8">
-                    <div className="flex items-center justify-between h-20">
-                        {/* Logo Section */}
-                        <Link href="/" className="flex items-center gap-4 group">
-                            <div className="relative">
-                                {/* Animated glow ring */}
-                                <div className="absolute inset-0 bg-gradient-to-r from-rose-500 to-amber-500 rounded-2xl blur-lg opacity-40 group-hover:opacity-70 transition-opacity duration-500"></div>
-                                <div className="relative w-12 h-12 rounded-2xl bg-gradient-to-br from-rose-500/20 via-purple-500/20 to-amber-500/20 border border-white/20 flex items-center justify-center backdrop-blur-sm">
-                                    <span className="text-xl">💕</span>
-                                </div>
+                <div className="max-w-5xl mx-auto px-6">
+                    <div className="flex items-center justify-between h-16">
+                        {/* Logo */}
+                        <Link href="/" className="flex items-center gap-3 group">
+                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-rose-500 to-pink-600 flex items-center justify-center shadow-lg shadow-rose-500/25">
+                                <span className="text-white text-sm">💕</span>
                             </div>
-                            <div className="flex flex-col">
-                                <span className="text-white font-semibold text-lg tracking-tight group-hover:text-rose-100 transition-colors">Our Space</span>
-                                <span className="text-white/30 text-[10px] uppercase tracking-[0.2em] font-medium">Since Nov 2022</span>
-                            </div>
+                            <span className="text-white font-medium text-[15px]">Our Space</span>
                         </Link>
 
-                        {/* Center Navigation - Premium pill style */}
-                        <div className="absolute left-1/2 -translate-x-1/2">
-                            <div className="flex items-center bg-white/[0.03] backdrop-blur-xl rounded-full px-2 py-1.5 border border-white/[0.08] shadow-lg shadow-black/20">
-                                {navLinks.map((link, index) => {
-                                    const isActive = pathname === link.href;
-                                    return (
-                                        <Link
-                                            key={link.href}
-                                            href={link.href}
-                                            className="relative group"
-                                        >
-                                            <div className={`flex items-center gap-2.5 px-6 py-3 rounded-full transition-all duration-300 ${isActive
-                                                    ? 'text-white'
-                                                    : 'text-white/40 hover:text-white/80'
-                                                }`}>
-                                                <span className={`text-sm transition-transform duration-300 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`}>{link.icon}</span>
-                                                <span className="text-sm font-medium">{link.label}</span>
-                                            </div>
+                        {/* Center Navigation */}
+                        <nav className="flex items-center gap-1">
+                            {navLinks.map((link) => {
+                                const isActive = pathname === link.href;
+                                return (
+                                    <Link
+                                        key={link.href}
+                                        href={link.href}
+                                        className={`px-4 py-2 rounded-lg text-[14px] font-medium transition-all duration-200 ${isActive
+                                                ? 'text-white bg-white/10'
+                                                : 'text-white/60 hover:text-white hover:bg-white/[0.05]'
+                                            }`}
+                                    >
+                                        {link.label}
+                                    </Link>
+                                );
+                            })}
+                        </nav>
 
-                                            {/* Active indicator - animated underline */}
-                                            {isActive && (
-                                                <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-white rounded-full shadow-lg shadow-white/50"></div>
-                                            )}
-
-                                            {/* Hover glow effect */}
-                                            <div className={`absolute inset-0 rounded-full transition-all duration-300 ${isActive
-                                                    ? 'bg-white/[0.12]'
-                                                    : 'bg-transparent group-hover:bg-white/[0.05]'
-                                                }`}></div>
-                                        </Link>
-                                    );
-                                })}
-                            </div>
-                        </div>
-
-                        {/* Profile Section */}
+                        {/* Profile */}
                         <div className="relative">
                             <button
-                                onClick={() => setProfileOpen(!profileOpen)}
-                                className="flex items-center gap-4 group"
+                                onClick={() => setMenuOpen(!menuOpen)}
+                                className="flex items-center gap-2.5 px-2 py-1.5 rounded-lg hover:bg-white/[0.05] transition-colors"
                             >
-                                {/* Profile Avatar */}
-                                <div className="relative">
-                                    <div className="absolute inset-0 bg-gradient-to-r from-rose-500 to-purple-500 rounded-full blur opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
-                                    {user.photoURL ? (
-                                        <img
-                                            src={user.photoURL}
-                                            alt={firstName}
-                                            className="relative w-10 h-10 rounded-full object-cover border-2 border-white/20 group-hover:border-white/40 transition-all"
-                                        />
-                                    ) : (
-                                        <div className="relative w-10 h-10 rounded-full bg-gradient-to-br from-rose-500/30 to-purple-500/30 border-2 border-white/20 flex items-center justify-center">
-                                            <span className="text-white/80 text-sm font-medium">{firstName[0]}</span>
-                                        </div>
-                                    )}
+                                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-white text-xs font-medium shadow-lg shadow-purple-500/25">
+                                    {user.displayName?.[0] || 'U'}
                                 </div>
-
-                                {/* Name and dropdown arrow */}
-                                <div className="flex items-center gap-2">
-                                    <span className="text-white/70 text-sm font-medium group-hover:text-white transition-colors">{firstName}</span>
-                                    <svg
-                                        className={`w-4 h-4 text-white/40 transition-transform duration-300 ${profileOpen ? 'rotate-180' : ''}`}
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke="currentColor"
-                                    >
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                                    </svg>
-                                </div>
+                                <svg className={`w-3.5 h-3.5 text-white/40 transition-transform duration-200 ${menuOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                                </svg>
                             </button>
 
-                            {/* Dropdown Menu */}
-                            {profileOpen && (
+                            {menuOpen && (
                                 <>
-                                    <div className="fixed inset-0 z-40" onClick={() => setProfileOpen(false)}></div>
-                                    <div className="absolute right-0 top-full mt-3 w-56 bg-[#12121a]/95 backdrop-blur-2xl rounded-2xl border border-white/10 shadow-2xl shadow-black/60 overflow-hidden z-50">
-                                        {/* User info */}
-                                        <div className="px-5 py-4 border-b border-white/[0.06]">
-                                            <p className="text-white text-sm font-medium">{user.displayName}</p>
-                                            <p className="text-white/40 text-xs truncate mt-0.5">{user.email}</p>
+                                    <div className="fixed inset-0 z-40" onClick={() => setMenuOpen(false)} />
+                                    <div className="absolute right-0 top-full mt-2 w-52 bg-[#18181b] border border-white/10 rounded-xl shadow-2xl shadow-black/50 overflow-hidden z-50">
+                                        <div className="px-4 py-3 border-b border-white/[0.06]">
+                                            <p className="text-white text-sm font-medium truncate">{user.displayName}</p>
+                                            <p className="text-white/40 text-xs truncate">{user.email}</p>
                                         </div>
-
-                                        {/* Menu items */}
-                                        <div className="py-2">
+                                        <div className="p-1.5">
                                             <button
-                                                onClick={signOut}
-                                                className="w-full px-5 py-3 text-left text-white/60 hover:text-white hover:bg-white/[0.05] text-sm transition-all flex items-center gap-3"
+                                                onClick={() => { setMenuOpen(false); signOut(); }}
+                                                className="w-full px-3 py-2 text-left text-white/60 hover:text-white hover:bg-white/[0.05] rounded-lg text-sm transition-colors flex items-center gap-2.5"
                                             >
-                                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
                                                 </svg>
                                                 Sign out
                                             </button>
@@ -152,44 +101,30 @@ export default function Navigation() {
                         </div>
                     </div>
                 </div>
+            </header>
 
-                {/* Animated border line */}
-                <div className={`h-px bg-gradient-to-r from-transparent via-white/10 to-transparent transition-opacity duration-500 ${scrolled ? 'opacity-100' : 'opacity-0'}`}></div>
-            </nav>
-
-            {/* Mobile Navigation - Premium floating bar */}
-            <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 pb-safe">
-                <div className="mx-4 mb-4">
-                    <div className="bg-[#0d0d12]/90 backdrop-blur-2xl rounded-3xl border border-white/[0.1] shadow-2xl shadow-black/60 px-2 py-2">
-                        <div className="flex items-center justify-around">
-                            {navLinks.map((link) => {
-                                const isActive = pathname === link.href;
-                                return (
-                                    <Link
-                                        key={link.href}
-                                        href={link.href}
-                                        className="relative flex flex-col items-center gap-1 px-4 py-3 rounded-2xl transition-all duration-300"
-                                    >
-                                        {/* Active background */}
-                                        {isActive && (
-                                            <div className="absolute inset-0 bg-gradient-to-b from-white/[0.12] to-white/[0.06] rounded-2xl"></div>
-                                        )}
-
-                                        <span className={`relative text-2xl transition-all duration-300 ${isActive ? 'scale-110 -translate-y-0.5' : ''
-                                            }`}>{link.icon}</span>
-
-                                        <span className={`relative text-[10px] font-medium tracking-wide transition-colors ${isActive ? 'text-white' : 'text-white/40'
-                                            }`}>{link.label}</span>
-
-                                        {/* Active dot indicator */}
-                                        {isActive && (
-                                            <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-white rounded-full shadow-lg shadow-white/50"></div>
-                                        )}
-                                    </Link>
-                                );
-                            })}
-                        </div>
-                    </div>
+            {/* Mobile Navigation */}
+            <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#0a0a0f]/95 backdrop-blur-xl border-t border-white/[0.06]">
+                <div className="flex items-center justify-around h-16 px-4">
+                    {navLinks.map((link) => {
+                        const isActive = pathname === link.href;
+                        return (
+                            <Link
+                                key={link.href}
+                                href={link.href}
+                                className={`flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition-all ${isActive ? 'text-white' : 'text-white/40'
+                                    }`}
+                            >
+                                <span className="text-lg">
+                                    {link.href === '/' && '🏠'}
+                                    {link.href === '/gallery' && '📸'}
+                                    {link.href === '/calendar' && '📅'}
+                                    {link.href === '/notes' && '💌'}
+                                </span>
+                                <span className="text-[10px] font-medium">{link.label}</span>
+                            </Link>
+                        );
+                    })}
                 </div>
             </nav>
         </>

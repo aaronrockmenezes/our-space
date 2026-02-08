@@ -68,7 +68,7 @@ export default function GalleryPage() {
     }, [user]);
 
     const deleteItem = async (item: MediaItem) => {
-        if (!confirm('Delete?')) return;
+        if (!confirm('Delete this item?')) return;
         await deleteDoc(doc(db, 'media', item.id));
         loadMedia();
     };
@@ -89,60 +89,123 @@ export default function GalleryPage() {
         maxSize: 1024 * 1024,
     });
 
-    if (loading || !user) return <div className="min-h-screen bg-[#0a0a0f]" />;
+    if (loading || !user) {
+        return (
+            <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center">
+                <div className="animate-pulse w-8 h-8 rounded-full bg-gradient-to-r from-rose-400/50 to-amber-300/50"></div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-[#0a0a0f] pb-24 md:pb-12" style={{ paddingTop: '7rem' }}>
-            <div className="max-w-lg mx-auto px-6">
+            <div className="max-w-2xl mx-auto px-6">
                 {/* Header */}
-                <h1 className="text-xl font-light text-white text-center mb-8">Gallery</h1>
+                <div className="text-center mb-8">
+                    <h1 className="text-2xl font-light text-white mb-2">Gallery</h1>
+                    <p className="text-white/30 text-sm">Your collection of memories</p>
+                </div>
 
-                {/* Upload */}
-                <div {...getRootProps()} className={`border border-dashed border-white/10 rounded-xl p-6 text-center mb-8 cursor-pointer transition-colors ${isDragActive ? 'border-white/30 bg-white/5' : 'hover:border-white/20'}`}>
+                {/* Upload Zone */}
+                <div
+                    {...getRootProps()}
+                    className={`relative overflow-hidden border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer transition-all duration-300 mb-8 ${isDragActive
+                            ? 'border-white/30 bg-white/[0.05]'
+                            : 'border-white/[0.08] hover:border-white/20 hover:bg-white/[0.02]'
+                        }`}
+                >
                     <input {...getInputProps()} />
-                    <p className="text-white/40 text-sm">{uploading ? 'Uploading...' : 'Drop files or tap'}</p>
-                    <p className="text-white/20 text-xs mt-1">Max 1MB</p>
+                    <div className="w-12 h-12 mx-auto mb-4 rounded-xl bg-white/[0.05] flex items-center justify-center">
+                        <span className="text-2xl">{uploading ? '⏳' : '+'}</span>
+                    </div>
+                    <p className="text-white/60 text-sm font-medium mb-1">
+                        {uploading ? 'Uploading...' : 'Drop files here or click to upload'}
+                    </p>
+                    <p className="text-white/30 text-xs">Photos and music • Max 1MB each</p>
                 </div>
 
                 {/* Tabs */}
-                <div className="flex gap-8 mb-6">
-                    <button onClick={() => setTab('photos')} className={`text-sm pb-2 border-b-2 transition-colors ${tab === 'photos' ? 'text-white border-white' : 'text-white/40 border-transparent'}`}>
-                        Photos · {photos.length}
+                <div className="flex gap-2 mb-6 bg-white/[0.03] p-1 rounded-xl border border-white/[0.06]">
+                    <button
+                        onClick={() => setTab('photos')}
+                        className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-medium transition-all duration-300 ${tab === 'photos'
+                                ? 'bg-white/10 text-white shadow-sm'
+                                : 'text-white/40 hover:text-white/60'
+                            }`}
+                    >
+                        📸 Photos ({photos.length})
                     </button>
-                    <button onClick={() => setTab('music')} className={`text-sm pb-2 border-b-2 transition-colors ${tab === 'music' ? 'text-white border-white' : 'text-white/40 border-transparent'}`}>
-                        Music · {music.length}
+                    <button
+                        onClick={() => setTab('music')}
+                        className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-medium transition-all duration-300 ${tab === 'music'
+                                ? 'bg-white/10 text-white shadow-sm'
+                                : 'text-white/40 hover:text-white/60'
+                            }`}
+                    >
+                        🎵 Music ({music.length})
                     </button>
                 </div>
 
                 {/* Content */}
                 {tab === 'photos' ? (
                     photos.length === 0 ? (
-                        <p className="text-white/30 text-sm text-center py-12">No photos</p>
+                        <div className="text-center py-16">
+                            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-white/5 flex items-center justify-center">
+                                <span className="text-2xl opacity-40">📷</span>
+                            </div>
+                            <p className="text-white/30 text-sm">No photos yet</p>
+                        </div>
                     ) : (
-                        <div className="grid grid-cols-3 gap-0.5">
+                        <div className="grid grid-cols-3 gap-1 rounded-2xl overflow-hidden">
                             {photos.map(p => (
-                                <div key={p.id} className="aspect-square relative group cursor-pointer" onClick={() => setSelectedPhoto(p)}>
-                                    <img src={p.url} alt="" className="w-full h-full object-cover" />
-                                    <button
-                                        onClick={(e) => { e.stopPropagation(); deleteItem(p); }}
-                                        className="absolute bottom-2 right-2 text-white/60 bg-black/50 rounded px-2 py-1 text-xs opacity-0 group-hover:opacity-100 transition-opacity"
-                                    >×</button>
+                                <div
+                                    key={p.id}
+                                    className="aspect-square relative group cursor-pointer overflow-hidden"
+                                    onClick={() => setSelectedPhoto(p)}
+                                >
+                                    <img src={p.url} alt="" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center">
+                                        <button
+                                            onClick={(e) => { e.stopPropagation(); deleteItem(p); }}
+                                            className="opacity-0 group-hover:opacity-100 transition-opacity text-white/80 bg-black/50 backdrop-blur-sm rounded-full w-8 h-8 flex items-center justify-center text-sm hover:bg-red-500/50"
+                                        >×</button>
+                                    </div>
                                 </div>
                             ))}
                         </div>
                     )
                 ) : (
                     music.length === 0 ? (
-                        <p className="text-white/30 text-sm text-center py-12">No music</p>
+                        <div className="text-center py-16">
+                            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-white/5 flex items-center justify-center">
+                                <span className="text-2xl opacity-40">🎵</span>
+                            </div>
+                            <p className="text-white/30 text-sm">No music yet</p>
+                        </div>
                     ) : (
                         <div className="space-y-2">
                             {music.map(m => (
-                                <div key={m.id} className={`flex items-center gap-3 p-3 rounded-lg transition-colors ${playing === m.id ? 'bg-white/10' : 'hover:bg-white/5'}`}>
-                                    <button onClick={() => playTrack(m)} className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-sm">
+                                <div
+                                    key={m.id}
+                                    className={`flex items-center gap-4 p-4 rounded-xl border transition-all duration-300 ${playing === m.id
+                                            ? 'bg-white/[0.08] border-white/20 shadow-lg'
+                                            : 'bg-white/[0.02] border-white/[0.06] hover:bg-white/[0.05]'
+                                        }`}
+                                >
+                                    <button
+                                        onClick={() => playTrack(m)}
+                                        className={`w-10 h-10 rounded-full flex items-center justify-center text-sm transition-all duration-300 ${playing === m.id
+                                                ? 'bg-white text-black'
+                                                : 'bg-white/10 text-white hover:bg-white/20'
+                                            }`}
+                                    >
                                         {playing === m.id ? '⏸' : '▶'}
                                     </button>
-                                    <span className="flex-1 text-white/60 text-sm truncate">{m.name}</span>
-                                    <button onClick={() => deleteItem(m)} className="text-white/30 text-xs">×</button>
+                                    <span className="flex-1 text-white/70 text-sm truncate">{m.name}</span>
+                                    <button
+                                        onClick={() => deleteItem(m)}
+                                        className="text-white/30 hover:text-red-400 text-lg transition-colors"
+                                    >×</button>
                                 </div>
                             ))}
                         </div>
@@ -152,8 +215,19 @@ export default function GalleryPage() {
 
             {/* Lightbox */}
             {selectedPhoto && (
-                <div className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-4" onClick={() => setSelectedPhoto(null)}>
-                    <img src={selectedPhoto.url} alt="" className="max-w-full max-h-[85vh] object-contain" />
+                <div
+                    className="fixed inset-0 bg-black/95 backdrop-blur-xl z-50 flex items-center justify-center p-4 animate-in fade-in duration-300"
+                    onClick={() => setSelectedPhoto(null)}
+                >
+                    <button
+                        className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/20 transition-all"
+                        onClick={() => setSelectedPhoto(null)}
+                    >×</button>
+                    <img
+                        src={selectedPhoto.url}
+                        alt=""
+                        className="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl"
+                    />
                 </div>
             )}
         </div>

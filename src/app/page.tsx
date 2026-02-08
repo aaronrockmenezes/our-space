@@ -55,7 +55,9 @@ export default function HomePage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#0a0a0f]">
-        <div className="text-white/40 text-sm">Loading...</div>
+        <div className="animate-pulse">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-r from-rose-400 to-amber-300 opacity-60"></div>
+        </div>
       </div>
     );
   }
@@ -64,52 +66,88 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] pb-24 md:pb-12" style={{ paddingTop: '7rem' }}>
-      <div className="max-w-lg mx-auto px-6">
+      {/* Ambient glow background */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-gradient-to-r from-purple-900/20 via-rose-900/10 to-amber-900/20 rounded-full blur-3xl"></div>
+      </div>
 
-        {/* Counter - Hero style */}
-        <div className="text-center py-8">
-          <p className="text-white/30 text-xs uppercase tracking-[0.2em] mb-8">Together</p>
-          <div className="flex justify-center items-baseline gap-1 text-white">
-            <span className="text-6xl font-extralight">{years}</span>
-            <span className="text-white/30 text-sm mr-4">y</span>
-            <span className="text-6xl font-extralight">{months}</span>
-            <span className="text-white/30 text-sm mr-4">m</span>
-            <span className="text-6xl font-extralight">{days}</span>
-            <span className="text-white/30 text-sm">d</span>
+      <div className="relative max-w-xl mx-auto px-6">
+        {/* Hero Counter Section */}
+        <div className="text-center mb-12">
+          <p className="text-white/40 text-xs font-medium uppercase tracking-[0.3em] mb-6">Together for</p>
+
+          <div className="flex justify-center items-end gap-2 mb-4">
+            <div className="flex flex-col items-center">
+              <span className="text-6xl md:text-7xl font-extralight text-white tabular-nums">{years}</span>
+              <span className="text-white/30 text-[10px] uppercase tracking-widest mt-1">years</span>
+            </div>
+            <span className="text-white/20 text-4xl font-thin mb-4">·</span>
+            <div className="flex flex-col items-center">
+              <span className="text-6xl md:text-7xl font-extralight text-white tabular-nums">{months}</span>
+              <span className="text-white/30 text-[10px] uppercase tracking-widest mt-1">months</span>
+            </div>
+            <span className="text-white/20 text-4xl font-thin mb-4">·</span>
+            <div className="flex flex-col items-center">
+              <span className="text-6xl md:text-7xl font-extralight text-white tabular-nums">{days}</span>
+              <span className="text-white/30 text-[10px] uppercase tracking-widest mt-1">days</span>
+            </div>
           </div>
-          <p className="text-white/20 text-xs mt-6">{totalDays.toLocaleString()} days</p>
+
+          <p className="text-white/25 text-sm">{totalDays.toLocaleString()} beautiful days ✨</p>
         </div>
 
-        {/* Simple nav links */}
-        <div className="flex justify-center gap-8 py-8 border-t border-b border-white/5">
-          <Link href="/gallery" className="text-center group">
-            <div className="text-2xl mb-2 group-hover:scale-110 transition-transform">📸</div>
-            <div className="text-white/40 text-xs">Gallery</div>
-          </Link>
-          <Link href="/calendar" className="text-center group">
-            <div className="text-2xl mb-2 group-hover:scale-110 transition-transform">📅</div>
-            <div className="text-white/40 text-xs">Calendar</div>
-          </Link>
-          <Link href="/notes" className="text-center group">
-            <div className="text-2xl mb-2 group-hover:scale-110 transition-transform">💌</div>
-            <div className="text-white/40 text-xs">Notes</div>
-          </Link>
+        {/* Navigation Cards */}
+        <div className="grid grid-cols-3 gap-3 mb-10">
+          {[
+            { href: '/gallery', icon: '📸', label: 'Gallery', desc: 'Our memories' },
+            { href: '/calendar', icon: '📅', label: 'Calendar', desc: 'Special dates' },
+            { href: '/notes', icon: '💌', label: 'Notes', desc: 'Love letters' },
+          ].map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="group relative bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.06] hover:border-white/[0.12] rounded-2xl p-5 text-center transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-white/5"
+            >
+              <div className="text-3xl mb-3 group-hover:scale-110 transition-transform duration-300">{item.icon}</div>
+              <div className="text-white/80 text-sm font-medium mb-0.5">{item.label}</div>
+              <div className="text-white/30 text-[10px]">{item.desc}</div>
+            </Link>
+          ))}
         </div>
 
         {/* Recent Photos */}
         {recentPhotos.length > 0 && (
-          <div className="pt-8">
+          <div>
             <div className="flex items-center justify-between mb-4">
-              <span className="text-white/30 text-xs uppercase tracking-wider">Recent</span>
-              <Link href="/gallery" className="text-white/20 text-xs hover:text-white/40">View all</Link>
+              <h2 className="text-white/50 text-xs font-medium uppercase tracking-wider">Recent moments</h2>
+              <Link href="/gallery" className="text-white/30 text-xs hover:text-white/50 transition-colors">
+                View all →
+              </Link>
             </div>
-            <div className="grid grid-cols-3 gap-0.5">
+            <div className="grid grid-cols-3 gap-1 rounded-2xl overflow-hidden">
               {recentPhotos.slice(0, 6).map((photo) => (
-                <div key={photo.id} className="aspect-square overflow-hidden">
-                  <img src={photo.url} alt="" className="w-full h-full object-cover" />
+                <div key={photo.id} className="aspect-square overflow-hidden group cursor-pointer">
+                  <img
+                    src={photo.url}
+                    alt=""
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
                 </div>
               ))}
             </div>
+          </div>
+        )}
+
+        {/* Empty state */}
+        {recentPhotos.length === 0 && (
+          <div className="text-center py-12">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-white/5 flex items-center justify-center">
+              <span className="text-2xl opacity-50">📷</span>
+            </div>
+            <p className="text-white/30 text-sm">No photos yet</p>
+            <Link href="/gallery" className="text-white/50 text-xs hover:text-white/70 mt-2 inline-block">
+              Add your first memory →
+            </Link>
           </div>
         )}
       </div>

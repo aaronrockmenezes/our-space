@@ -2,7 +2,7 @@
 
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { format } from 'date-fns';
 import { collection, query, orderBy, getDocs, addDoc, deleteDoc, doc, Timestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
@@ -21,6 +21,7 @@ export default function NotesPage() {
     const [notes, setNotes] = useState<LoveNote[]>([]);
     const [newNote, setNewNote] = useState('');
     const [sending, setSending] = useState(false);
+    const messagesEndRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (!loading && !user) router.push('/login');
@@ -30,8 +31,12 @@ export default function NotesPage() {
         if (user) loadNotes();
     }, [user]);
 
+    useEffect(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, [notes]);
+
     const loadNotes = async () => {
-        const snap = await getDocs(query(collection(db, 'loveNotes'), orderBy('createdAt', 'desc')));
+        const snap = await getDocs(query(collection(db, 'loveNotes'), orderBy('createdAt', 'asc')));
         setNotes(snap.docs.map(d => ({
             id: d.id,
             ...d.data(),
@@ -59,57 +64,100 @@ export default function NotesPage() {
         loadNotes();
     };
 
-    if (loading || !user) return <div className="min-h-screen bg-[#0a0a0f]" />;
+    const handleKeyPress = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendNote();
+        }
+    };
+
+    if (loading || !user) {
+        return (
+            <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center">
+                <div className="animate-pulse w-8 h-8 rounded-full bg-gradient-to-r from-rose-400/50 to-amber-300/50"></div>
+            </div>
+        );
+    }
 
     return (
-        <div className="min-h-screen bg-[#0a0a0f] pb-24 md:pb-12" style={{ paddingTop: '7rem' }}>
-            <div className="max-w-md mx-auto px-6">
+        <div className="min-h-screen bg-[#0a0a0f] flex flex-col" style={{ paddingTop: '7rem', paddingBottom: '6rem' }}>
+            <div className="flex-1 max-w-lg mx-auto px-6 w-full">
                 {/* Header */}
-                <h1 className="text-xl font-light text-white text-center mb-8">Notes</h1>
-
-                {/* Compose */}
-                <div className="mb-8">
-                    <textarea
-                        value={newNote}
-                        onChange={e => setNewNote(e.target.value)}
-                        placeholder="Write something..."
-                        className="w-full bg-transparent border border-white/10 rounded-xl p-4 text-white/70 text-sm resize-none focus:outline-none focus:border-white/20 placeholder:text-white/20"
-                        rows={2}
-                        maxLength={500}
-                    />
-                    <div className="flex items-center justify-between mt-2">
-                        <span className="text-white/20 text-xs">{newNote.length}/500</span>
-                        <button
-                            onClick={sendNote}
-                            disabled={!newNote.trim() || sending}
-                            className="px-4 py-1.5 rounded-full text-xs bg-white/10 text-white/70 hover:bg-white/15 disabled:opacity-30"
-                        >
-                            Send
-                        </button>
-                    </div>
+                <div className="text-center mb-8">
+                    <h1 className="text-2xl font-light text-white mb-2">Love Notes</h1>
+                    <p className="text-white/30 text-sm">Leave sweet messages for each other</p>
                 </div>
 
-                {/* Notes */}
+                {/* Messages */}
                 {notes.length === 0 ? (
-                    <p className="text-white/30 text-sm text-center py-12">No notes yet</p>
+                    <div className="text-center py-16">
+                        <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-white/5 flex items-center justify-center">
+                            <span className="text-2xl opacity-40">💌</span>
+                        </div>
+                        <p className="text-white/30 text-sm mb-2">No notes yet</p>
+                        <p className="text-white/20 text-xs">Be the first to send a love note</p>
+                    </div>
                 ) : (
-                    <div className="space-y-4">
+                    <div className="space-y-4 mb-8">
                         {notes.map(note => {
                             const mine = note.senderId === user.uid;
                             return (
-                                <div key={note.id} className={`flex ${mine ? 'justify-end' : 'justify-start'}`}>
-                                    <div className={`max-w-[80%] ${mine ? 'bg-white/10' : 'bg-white/5'} rounded-2xl px-4 py-3`}>
-                                        <p className="text-white/70 text-sm">{note.content}</p>
-                                        <div className={`flex items-center gap-2 mt-2 text-white/30 text-xs ${mine ? 'justify-end' : ''}`}>
-                                            <span>{format(note.createdAt, 'MMM d')}</span>
-                                            {mine && <button onClick={() => deleteNote(note.id)} className="hover:text-white/50">×</button>}
+                                <div key={note.id} className={`flex ${mine ? 'justify-end' : 'justify-start'} group`}>
+                                    <div className={`max-w-[80%] relative ${mine
+                                            ? 'bg-gradient-to-br from-white/15 to-white/10 rounded-2xl rounded-br-md'
+                                            : 'bg-white/[0.06] rounded-2xl rounded-bl-md'
+                                        } px-4 py-3 border border-white/[0.08]`}>
+                                        <p className="text-white/90 text-sm leading-relaxed">{note.content}</p>
+                                        <div className={`flex items-center gap-2 mt-2 ${mine ? 'justify-end' : ''}`}>
+                                            <span className="text-white/30 text-[10px]">{format(note.createdAt, 'MMM d, h:mm a')}</span>
+                                            {mine && (
+                                                <button
+                                                    onClick={() => deleteNote(note.id)}
+                                                    className="text-white/20 hover:text-red-400 text-xs opacity-0 group-hover:opacity-100 transition-all"
+                                                >
+                                                    ×
+                                                </button>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
                             );
                         })}
+                        <div ref={messagesEndRef} />
                     </div>
                 )}
+            </div>
+
+            {/* Compose Area - Fixed at bottom */}
+            <div className="fixed bottom-20 md:bottom-0 left-0 right-0 bg-[#0a0a0f]/95 backdrop-blur-xl border-t border-white/[0.06] p-4">
+                <div className="max-w-lg mx-auto">
+                    <div className="flex items-end gap-3">
+                        <div className="flex-1 relative">
+                            <textarea
+                                value={newNote}
+                                onChange={e => setNewNote(e.target.value)}
+                                onKeyPress={handleKeyPress}
+                                placeholder="Write a love note..."
+                                className="w-full bg-white/[0.05] border border-white/[0.1] rounded-2xl px-4 py-3 pr-12 text-white/90 text-sm resize-none focus:outline-none focus:border-white/30 focus:bg-white/[0.08] transition-all placeholder:text-white/30"
+                                rows={1}
+                                maxLength={500}
+                                style={{ minHeight: '48px', maxHeight: '120px' }}
+                            />
+                            <span className="absolute right-4 bottom-3 text-white/20 text-[10px]">{newNote.length}/500</span>
+                        </div>
+                        <button
+                            onClick={sendNote}
+                            disabled={!newNote.trim() || sending}
+                            className="w-12 h-12 rounded-xl bg-white text-black flex items-center justify-center transition-all hover:bg-white/90 disabled:opacity-30 disabled:cursor-not-allowed"
+                        >
+                            {sending ? (
+                                <span className="animate-pulse">...</span>
+                            ) : (
+                                <span className="text-lg">↑</span>
+                            )}
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     );

@@ -60,7 +60,13 @@ export default function CalendarPage() {
         loadEvents();
     };
 
-    if (loading || !user) return <div className="min-h-screen bg-[#0a0a0f]" />;
+    if (loading || !user) {
+        return (
+            <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center">
+                <div className="animate-pulse w-8 h-8 rounded-full bg-gradient-to-r from-rose-400/50 to-amber-300/50"></div>
+            </div>
+        );
+    }
 
     const start = startOfMonth(month);
     const end = endOfMonth(month);
@@ -70,85 +76,155 @@ export default function CalendarPage() {
 
     return (
         <div className="min-h-screen bg-[#0a0a0f] pb-24 md:pb-12" style={{ paddingTop: '7rem' }}>
-            <div className="max-w-sm mx-auto px-6">
-                {/* Month nav */}
-                <div className="flex items-center justify-between mb-6">
-                    <button onClick={() => setMonth(subMonths(month, 1))} className="text-white/40 p-2">←</button>
-                    <h1 className="text-lg font-light text-white">{format(month, 'MMMM yyyy')}</h1>
-                    <button onClick={() => setMonth(addMonths(month, 1))} className="text-white/40 p-2">→</button>
+            <div className="max-w-md mx-auto px-6">
+                {/* Header */}
+                <div className="text-center mb-8">
+                    <h1 className="text-2xl font-light text-white mb-2">Calendar</h1>
+                    <p className="text-white/30 text-sm">Track your special moments</p>
                 </div>
 
-                {/* Day names */}
+                {/* Month Navigator */}
+                <div className="flex items-center justify-between mb-6 px-2">
+                    <button
+                        onClick={() => setMonth(subMonths(month, 1))}
+                        className="w-10 h-10 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] text-white/60 hover:text-white flex items-center justify-center transition-all duration-300"
+                    >
+                        ←
+                    </button>
+                    <h2 className="text-lg font-medium text-white">{format(month, 'MMMM yyyy')}</h2>
+                    <button
+                        onClick={() => setMonth(addMonths(month, 1))}
+                        className="w-10 h-10 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] text-white/60 hover:text-white flex items-center justify-center transition-all duration-300"
+                    >
+                        →
+                    </button>
+                </div>
+
+                {/* Day Names */}
                 <div className="grid grid-cols-7 gap-1 mb-2">
-                    {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => (
-                        <div key={i} className="text-center text-white/30 text-xs py-1">{d}</div>
+                    {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((d, i) => (
+                        <div key={i} className="text-center text-white/30 text-[10px] uppercase tracking-wider py-2 font-medium">{d}</div>
                     ))}
                 </div>
 
-                {/* Days */}
-                <div className="grid grid-cols-7 gap-1">
+                {/* Calendar Grid */}
+                <div className="grid grid-cols-7 gap-1 mb-8">
                     {Array.from({ length: startDay }).map((_, i) => <div key={`e${i}`} />)}
                     {days.map(day => {
-                        const hasEvent = getEvents(day).length > 0;
-                        const hasSpecial = getEvents(day).some(e => e.isSpecial);
+                        const dayEvents = getEvents(day);
+                        const hasEvent = dayEvents.length > 0;
+                        const hasSpecial = dayEvents.some(e => e.isSpecial);
+                        const today = isToday(day);
+
                         return (
                             <button
                                 key={day.toISOString()}
                                 onClick={() => setSelectedDate(day)}
-                                className={`aspect-square rounded-lg text-sm flex items-center justify-center relative ${isToday(day) ? 'bg-white text-black' : 'text-white/50 hover:bg-white/10'
-                                    } ${hasSpecial ? 'ring-1 ring-pink-400/50' : ''}`}
+                                className={`aspect-square rounded-xl text-sm font-medium flex flex-col items-center justify-center relative transition-all duration-300 ${today
+                                        ? 'bg-white text-black shadow-lg shadow-white/20'
+                                        : 'text-white/60 hover:bg-white/[0.08] hover:text-white'
+                                    } ${hasSpecial ? 'ring-2 ring-rose-400/50 ring-offset-2 ring-offset-[#0a0a0f]' : ''}`}
                             >
                                 {format(day, 'd')}
-                                {hasEvent && !isToday(day) && <span className="absolute bottom-1 w-1 h-1 rounded-full bg-white/40" />}
+                                {hasEvent && !today && (
+                                    <span className="absolute bottom-1.5 w-1 h-1 rounded-full bg-white/50"></span>
+                                )}
                             </button>
                         );
                     })}
                 </div>
 
-                {/* Special dates */}
+                {/* Special Dates */}
                 {events.filter(e => e.isSpecial).length > 0 && (
-                    <div className="mt-8">
-                        <p className="text-white/30 text-xs uppercase tracking-wider mb-3">Special</p>
-                        {events.filter(e => e.isSpecial).map(e => (
-                            <div key={e.id} className="flex items-center justify-between py-2 border-b border-white/5">
-                                <div>
-                                    <p className="text-white/70 text-sm">{e.title}</p>
-                                    <p className="text-white/30 text-xs">{format(e.date, 'MMM d')}</p>
+                    <div className="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-5">
+                        <h3 className="text-white/50 text-xs font-medium uppercase tracking-wider mb-4">Special Dates</h3>
+                        <div className="space-y-3">
+                            {events.filter(e => e.isSpecial).map(e => (
+                                <div key={e.id} className="flex items-center justify-between group">
+                                    <div className="flex items-center gap-3">
+                                        <span className="text-lg">💕</span>
+                                        <div>
+                                            <p className="text-white/80 text-sm font-medium">{e.title}</p>
+                                            <p className="text-white/30 text-xs">{format(e.date, 'MMMM d, yyyy')}</p>
+                                        </div>
+                                    </div>
+                                    <button
+                                        onClick={() => deleteEvent(e.id)}
+                                        className="text-white/20 hover:text-red-400 text-lg opacity-0 group-hover:opacity-100 transition-all"
+                                    >×</button>
                                 </div>
-                                <button onClick={() => deleteEvent(e.id)} className="text-white/30 text-xs">×</button>
-                            </div>
-                        ))}
+                            ))}
+                        </div>
                     </div>
                 )}
             </div>
 
-            {/* Modal */}
+            {/* Add Event Modal */}
             {selectedDate && (
-                <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-6" onClick={() => setSelectedDate(null)}>
-                    <div className="bg-[#141418] rounded-xl p-5 max-w-xs w-full" onClick={e => e.stopPropagation()}>
-                        <p className="text-white/70 text-sm mb-4">{format(selectedDate, 'MMMM d, yyyy')}</p>
+                <div
+                    className="fixed inset-0 bg-black/80 backdrop-blur-xl z-50 flex items-center justify-center p-6 animate-in fade-in duration-200"
+                    onClick={() => setSelectedDate(null)}
+                >
+                    <div
+                        className="bg-[#141418] border border-white/[0.08] rounded-2xl p-6 max-w-sm w-full shadow-2xl animate-in slide-in-from-bottom-4 duration-300"
+                        onClick={e => e.stopPropagation()}
+                    >
+                        <h3 className="text-white text-lg font-medium mb-1">{format(selectedDate, 'EEEE')}</h3>
+                        <p className="text-white/40 text-sm mb-6">{format(selectedDate, 'MMMM d, yyyy')}</p>
 
-                        {getEvents(selectedDate).map(e => (
-                            <div key={e.id} className="flex items-center justify-between py-2 mb-2 border-b border-white/5">
-                                <span className="text-white/60 text-sm">{e.isSpecial ? '💕 ' : ''}{e.title}</span>
-                                <button onClick={() => deleteEvent(e.id)} className="text-white/30 text-xs">×</button>
+                        {/* Existing events */}
+                        {getEvents(selectedDate).length > 0 && (
+                            <div className="space-y-2 mb-6">
+                                {getEvents(selectedDate).map(e => (
+                                    <div key={e.id} className="flex items-center justify-between p-3 bg-white/[0.05] rounded-xl">
+                                        <span className="text-white/70 text-sm">
+                                            {e.isSpecial && '💕 '}{e.title}
+                                        </span>
+                                        <button
+                                            onClick={() => deleteEvent(e.id)}
+                                            className="text-white/30 hover:text-red-400 text-lg transition-colors"
+                                        >×</button>
+                                    </div>
+                                ))}
                             </div>
-                        ))}
+                        )}
 
+                        {/* Add new event */}
                         <input
                             type="text"
-                            placeholder="Add event"
+                            placeholder="Add an event..."
                             value={newTitle}
                             onChange={e => setNewTitle(e.target.value)}
-                            className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white/80 text-sm mb-3 focus:outline-none"
+                            className="w-full bg-white/[0.05] border border-white/[0.1] rounded-xl p-4 text-white/90 text-sm mb-4 focus:outline-none focus:border-white/30 focus:bg-white/[0.08] transition-all placeholder:text-white/30"
                         />
-                        <label className="flex items-center gap-2 text-white/40 text-sm mb-4">
-                            <input type="checkbox" checked={isSpecial} onChange={e => setIsSpecial(e.target.checked)} />
-                            Special 💕
+
+                        <label className="flex items-center gap-3 text-white/50 text-sm mb-6 cursor-pointer group">
+                            <div className={`w-5 h-5 rounded-md border transition-all flex items-center justify-center ${isSpecial ? 'bg-rose-500 border-rose-500' : 'border-white/20 group-hover:border-white/40'}`}>
+                                {isSpecial && <span className="text-white text-xs">✓</span>}
+                            </div>
+                            <input
+                                type="checkbox"
+                                className="hidden"
+                                checked={isSpecial}
+                                onChange={e => setIsSpecial(e.target.checked)}
+                            />
+                            Mark as special date 💕
                         </label>
-                        <div className="flex gap-2">
-                            <button onClick={() => setSelectedDate(null)} className="flex-1 py-2 text-white/40 text-sm">Cancel</button>
-                            <button onClick={addEvent} className="flex-1 py-2 bg-white/10 text-white/80 text-sm rounded-lg">Add</button>
+
+                        <div className="flex gap-3">
+                            <button
+                                onClick={() => setSelectedDate(null)}
+                                className="flex-1 py-3 text-white/40 text-sm rounded-xl hover:bg-white/[0.05] transition-all"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={addEvent}
+                                disabled={!newTitle.trim()}
+                                className="flex-1 py-3 bg-white text-black text-sm font-medium rounded-xl hover:bg-white/90 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                            >
+                                Add Event
+                            </button>
                         </div>
                     </div>
                 </div>

@@ -56,7 +56,7 @@ export default function HomePage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#0a0a0f]">
         <div className="animate-pulse">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-r from-rose-400 to-amber-300 opacity-60"></div>
+          <div className="w-10 h-10 rounded-full bg-gradient-to-r from-rose-400 to-amber-300 opacity-60"></div>
         </div>
       </div>
     );
@@ -65,39 +65,39 @@ export default function HomePage() {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] pb-24 md:pb-12" style={{ paddingTop: '7rem' }}>
+    <div className="min-h-screen bg-[#0a0a0f] pb-32 md:pb-16" style={{ paddingTop: '8rem' }}>
       {/* Ambient glow background */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-gradient-to-r from-purple-900/20 via-rose-900/10 to-amber-900/20 rounded-full blur-3xl"></div>
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-gradient-to-r from-purple-900/15 via-rose-900/10 to-amber-900/15 rounded-full blur-3xl"></div>
       </div>
 
-      <div className="relative max-w-xl mx-auto px-6">
-        {/* Hero Counter Section */}
-        <div className="text-center mb-12">
-          <p className="text-white/40 text-xs font-medium uppercase tracking-[0.3em] mb-6">Together for</p>
+      <div className="relative max-w-md mx-auto px-8">
+        {/* Hero Counter Section - Generous spacing */}
+        <div className="text-center mb-16">
+          <p className="text-white/40 text-xs font-medium uppercase tracking-[0.35em] mb-10">Together for</p>
 
-          <div className="flex justify-center items-end gap-2 mb-4">
+          <div className="flex justify-center items-end gap-6 mb-6">
             <div className="flex flex-col items-center">
-              <span className="text-6xl md:text-7xl font-extralight text-white tabular-nums">{years}</span>
-              <span className="text-white/30 text-[10px] uppercase tracking-widest mt-1">years</span>
+              <span className="text-7xl md:text-8xl font-extralight text-white tabular-nums leading-none">{years}</span>
+              <span className="text-white/30 text-[10px] uppercase tracking-[0.2em] mt-3">years</span>
             </div>
-            <span className="text-white/20 text-4xl font-thin mb-4">·</span>
+            <span className="text-white/15 text-3xl font-thin mb-8">·</span>
             <div className="flex flex-col items-center">
-              <span className="text-6xl md:text-7xl font-extralight text-white tabular-nums">{months}</span>
-              <span className="text-white/30 text-[10px] uppercase tracking-widest mt-1">months</span>
+              <span className="text-7xl md:text-8xl font-extralight text-white tabular-nums leading-none">{months}</span>
+              <span className="text-white/30 text-[10px] uppercase tracking-[0.2em] mt-3">months</span>
             </div>
-            <span className="text-white/20 text-4xl font-thin mb-4">·</span>
+            <span className="text-white/15 text-3xl font-thin mb-8">·</span>
             <div className="flex flex-col items-center">
-              <span className="text-6xl md:text-7xl font-extralight text-white tabular-nums">{days}</span>
-              <span className="text-white/30 text-[10px] uppercase tracking-widest mt-1">days</span>
+              <span className="text-7xl md:text-8xl font-extralight text-white tabular-nums leading-none">{days}</span>
+              <span className="text-white/30 text-[10px] uppercase tracking-[0.2em] mt-3">days</span>
             </div>
           </div>
 
-          <p className="text-white/25 text-sm">{totalDays.toLocaleString()} beautiful days ✨</p>
+          <p className="text-white/20 text-sm mt-8">{totalDays.toLocaleString()} beautiful days ✨</p>
         </div>
 
-        {/* Navigation Cards */}
-        <div className="grid grid-cols-3 gap-3 mb-10">
+        {/* Navigation Cards - More spacing and rounder corners */}
+        <div className="grid grid-cols-3 gap-4 mb-16">
           {[
             { href: '/gallery', icon: '📸', label: 'Gallery', desc: 'Our memories' },
             { href: '/calendar', icon: '📅', label: 'Calendar', desc: 'Special dates' },
@@ -106,25 +106,25 @@ export default function HomePage() {
             <Link
               key={item.href}
               href={item.href}
-              className="group relative bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.06] hover:border-white/[0.12] rounded-2xl p-5 text-center transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-white/5"
+              className="group relative bg-white/[0.03] hover:bg-white/[0.07] border border-white/[0.06] hover:border-white/[0.15] rounded-3xl p-6 text-center transition-all duration-300 hover:scale-[1.03] hover:shadow-xl hover:shadow-black/30"
             >
-              <div className="text-3xl mb-3 group-hover:scale-110 transition-transform duration-300">{item.icon}</div>
-              <div className="text-white/80 text-sm font-medium mb-0.5">{item.label}</div>
-              <div className="text-white/30 text-[10px]">{item.desc}</div>
+              <div className="text-3xl mb-4 group-hover:scale-110 transition-transform duration-300">{item.icon}</div>
+              <div className="text-white/80 text-sm font-medium mb-1">{item.label}</div>
+              <div className="text-white/30 text-[10px] leading-relaxed">{item.desc}</div>
             </Link>
           ))}
         </div>
 
-        {/* Recent Photos */}
+        {/* Recent Photos - Only show if there are photos */}
         {recentPhotos.length > 0 && (
           <div>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-white/50 text-xs font-medium uppercase tracking-wider">Recent moments</h2>
-              <Link href="/gallery" className="text-white/30 text-xs hover:text-white/50 transition-colors">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-white/40 text-xs font-medium uppercase tracking-[0.15em]">Recent moments</h2>
+              <Link href="/gallery" className="text-white/25 text-xs hover:text-white/50 transition-colors">
                 View all →
               </Link>
             </div>
-            <div className="grid grid-cols-3 gap-1 rounded-2xl overflow-hidden">
+            <div className="grid grid-cols-3 gap-2 rounded-3xl overflow-hidden">
               {recentPhotos.slice(0, 6).map((photo) => (
                 <div key={photo.id} className="aspect-square overflow-hidden group cursor-pointer">
                   <img
@@ -135,19 +135,6 @@ export default function HomePage() {
                 </div>
               ))}
             </div>
-          </div>
-        )}
-
-        {/* Empty state */}
-        {recentPhotos.length === 0 && (
-          <div className="text-center py-12">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-white/5 flex items-center justify-center">
-              <span className="text-2xl opacity-50">📷</span>
-            </div>
-            <p className="text-white/30 text-sm">No photos yet</p>
-            <Link href="/gallery" className="text-white/50 text-xs hover:text-white/70 mt-2 inline-block">
-              Add your first memory →
-            </Link>
           </div>
         )}
       </div>

@@ -159,23 +159,24 @@ export default function HomePage() {
             <Link key={item.href} href={item.href} className="block group">
               <motion.div
                 whileHover={{ y: -5 }}
-                className={`relative h-[280px] bg-[#121217]/50 backdrop-blur-md border border-white/[0.08] ${item.border} rounded-[2rem] p-8 flex flex-col justify-between transition-all duration-500 overflow-hidden hover:bg-white/[0.04] hover:shadow-2xl hover:shadow-black/50`}
+                transition={{ duration: 0.4, ease: "easeOut" }}
+                className={`relative h-[280px] bg-[#121217]/30 backdrop-blur-md border border-white/[0.05] ${item.border} rounded-[2rem] p-8 flex flex-col justify-between transition-all duration-500 overflow-hidden hover:bg-white/[0.02] hover:shadow-2xl hover:shadow-black/50`}
               >
                 {/* Hover Gradient Blob */}
-                <div className={`absolute -right-20 -top-20 w-60 h-60 rounded-full ${item.bg} blur-[80px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none`} />
+                <div className={`absolute -right-20 -top-20 w-60 h-60 rounded-full ${item.bg} blur-[80px] opacity-0 group-hover:opacity-40 transition-opacity duration-700 pointer-events-none`} />
 
                 <div>
-                  <div className={`w-14 h-14 rounded-2xl ${item.bg} flex items-center justify-center mb-6 border border-white/5 group-hover:scale-110 transition-transform duration-500`}>
+                  <div className={`w-14 h-14 rounded-2xl ${item.bg} flex items-center justify-center mb-6 border border-white/5 group-hover:scale-105 transition-transform duration-700 ease-out`}>
                     <item.icon className={`w-7 h-7 text-white`} strokeWidth={1.5} />
                   </div>
-                  <h3 className="text-3xl font-serif text-white mb-2 tracking-wide">{item.label}</h3>
-                  <p className="text-white/40 font-medium tracking-wide text-sm uppercase">{item.desc}</p>
+                  <h3 className="text-3xl font-serif text-white mb-2 tracking-wide group-hover:translate-x-1 transition-transform duration-500">{item.label}</h3>
+                  <p className="text-white/40 font-medium tracking-wide text-sm uppercase group-hover:text-white/60 transition-colors duration-500">{item.desc}</p>
                 </div>
 
-                <div className="flex items-center justify-between mt-8">
-                  <span className="text-white/30 text-xs font-semibold tracking-widest uppercase group-hover:text-white/60 transition-colors">Explore</span>
-                  <div className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-white group-hover:border-white transition-all duration-300">
-                    <ArrowRight className="w-4 h-4 text-white group-hover:text-black transition-colors" />
+                <div className="flex items-center justify-between mt-8 border-t border-white/5 pt-6 group-hover:border-white/10 transition-colors duration-500">
+                  <span className="text-white/30 text-xs font-semibold tracking-widest uppercase group-hover:text-white/60 transition-colors duration-500">Explore</span>
+                  <div className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-white group-hover:border-white transition-all duration-500">
+                    <ArrowRight className="w-4 h-4 text-white group-hover:text-black transition-colors duration-500" />
                   </div>
                 </div>
               </motion.div>

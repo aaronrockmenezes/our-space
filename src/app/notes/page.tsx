@@ -112,13 +112,13 @@ export default function NotesPage() {
                                 return (
                                     <div key={note.id} className={`flex ${mine ? 'justify-end' : 'justify-start'} group w-full`}>
                                         <div
-                                            className={`relative w-fit max-w-[85%] sm:max-w-[75%] ${mine
-                                                    ? 'bg-gradient-to-br from-rose-500/10 to-purple-600/10 border-rose-500/10 hover:border-rose-500/20'
-                                                    : 'bg-white/[0.03] border-white/[0.06] hover:border-white/10'
-                                                } border rounded-2xl ${mine ? 'rounded-br-sm' : 'rounded-bl-sm'} px-6 py-4 transition-all duration-300 shadow-sm`}
+                                            className={`relative flex flex-col w-fit min-w-[140px] max-w-[85%] sm:max-w-[75%] ${mine
+                                                    ? 'bg-gradient-to-br from-rose-500/20 to-purple-600/20 border-rose-500/20 hover:border-rose-500/30'
+                                                    : 'bg-white/[0.05] border-white/[0.08] hover:border-white/15'
+                                                } border rounded-2xl ${mine ? 'rounded-br-sm' : 'rounded-bl-sm'} !px-6 !py-4 transition-all duration-300 shadow-lg shadow-black/20`}
                                         >
                                             <p
-                                                className="text-white/90 text-[15px] leading-relaxed select-text font-normal text-left"
+                                                className="text-white/95 text-[15px] leading-relaxed select-text font-normal text-left"
                                                 style={{
                                                     wordBreak: 'break-word',
                                                     overflowWrap: 'anywhere',
@@ -129,14 +129,17 @@ export default function NotesPage() {
                                             </p>
 
                                             <div className={`flex items-center gap-3 mt-2 ${mine ? 'justify-end' : 'justify-start'}`}>
-                                                <span className="text-white/20 text-[10px] uppercase tracking-wider font-semibold">{format(note.createdAt, 'h:mm a')}</span>
+                                                <span className="text-white/30 text-[10px] uppercase tracking-wider font-semibold">{format(note.createdAt, 'h:mm a')}</span>
                                                 {mine && (
-                                                    <button
-                                                        onClick={() => deleteNote(note.id)}
-                                                        className="hidden group-hover:block text-white/10 hover:text-rose-400 text-[10px] transition-colors uppercase tracking-wider font-semibold"
-                                                    >
-                                                        Delete
-                                                    </button>
+                                                    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                        <button
+                                                            onClick={(e) => { e.stopPropagation(); deleteNote(note.id); }}
+                                                            className="w-5 h-5 flex items-center justify-center bg-red-500/20 hover:bg-red-500/40 rounded-full text-red-400"
+                                                            title="Delete note"
+                                                        >
+                                                            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                                                        </button>
+                                                    </div>
                                                 )}
                                             </div>
                                         </div>
@@ -152,7 +155,7 @@ export default function NotesPage() {
             {/* Compose - Fixed at bottom, CENTERED */}
             <div className="fixed bottom-0 left-0 right-0 z-40 bg-gradient-to-t from-[#0a0a0f] via-[#0a0a0f] to-transparent pt-12 pb-8 md:pb-12 flex justify-center pointer-events-none">
                 <div className="w-full max-w-[600px] px-6 pointer-events-auto">
-                    <div className="flex items-end gap-3 bg-[#121217]/80 backdrop-blur-2xl border border-white/10 rounded-3xl p-2.5 shadow-2xl shadow-black/80 transition-transform duration-300 focus-within:scale-[1.02] focus-within:border-white/20">
+                    <div className="flex items-end gap-3 bg-[#121217]/80 backdrop-blur-2xl border border-white/10 rounded-3xl p-2.5 shadow-2xl shadow-black/80 transition-transform duration-300 focus-within:scale-[1.02] focus-within:border-white/20 ring-1 ring-white/5">
                         <textarea
                             value={newNote}
                             onChange={e => setNewNote(e.target.value)}

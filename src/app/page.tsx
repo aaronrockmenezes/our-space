@@ -55,7 +55,7 @@ export default function HomePage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-white text-xl">Loading...</div>
+        <div className="text-white/60 text-xl">Loading...</div>
       </div>
     );
   }
@@ -84,30 +84,31 @@ export default function HomePage() {
   ];
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-8">
-      {/* Background decoration */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10">
-        <div className="absolute top-20 right-1/4 w-72 h-72 bg-amber-500/5 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-1/3 left-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl"></div>
+    <div className="max-w-5xl mx-auto px-6 py-8 relative z-10">
+      {/* Animated Background Orbs */}
+      <div className="bg-orbs">
+        <div className="orb orb-1"></div>
+        <div className="orb orb-2"></div>
+        <div className="orb orb-3"></div>
       </div>
 
       {/* Welcome Section */}
-      <div className="text-center mb-10 slide-up">
-        <h1 className="text-4xl md:text-5xl font-semibold text-white mb-3">
+      <div className="text-center mb-12 slide-up">
+        <h1 className="text-4xl md:text-5xl font-medium text-white glow-text mb-4">
           Welcome back, {user.displayName?.split(' ')[0]} 💕
         </h1>
-        <p className="text-white/70 text-lg italic">
+        <p className="text-[var(--text-muted)] text-lg italic font-light">
           "In all the world, there is no heart for me like yours"
         </p>
       </div>
 
       {/* Relationship Counter */}
-      <div className="mb-10 slide-up delay-100">
+      <div className="mb-12 slide-up delay-100">
         <RelationshipCounter startDate={RELATIONSHIP_START_DATE} />
       </div>
 
       {/* Quick Access Cards */}
-      <div className="grid md:grid-cols-3 gap-5 mb-10">
+      <div className="grid md:grid-cols-3 gap-5 mb-12">
         {features.map((feature, index) => (
           <Link
             key={feature.href}
@@ -128,10 +129,10 @@ export default function HomePage() {
         {/* Recent Notes */}
         <div className="glass-card-static p-6 slide-up delay-400">
           <div className="flex items-center justify-between mb-5">
-            <h3 className="text-lg font-medium text-[var(--text-primary)]">
+            <h3 className="text-lg font-medium text-white">
               💌 Recent Notes
             </h3>
-            <Link href="/notes" className="text-[var(--accent)] text-sm font-medium hover:underline">
+            <Link href="/notes" className="text-[var(--accent-gold)] text-sm font-medium hover:underline">
               View all →
             </Link>
           </div>
@@ -139,7 +140,7 @@ export default function HomePage() {
             <div className="space-y-3">
               {recentNotes.map(note => (
                 <div key={note.id} className="note-card !p-4">
-                  <p className="text-[var(--text-primary)] line-clamp-2 relative z-10">{note.content}</p>
+                  <p className="text-[var(--text-secondary)] line-clamp-2 relative z-10">{note.content}</p>
                   <p className="text-xs text-[var(--text-muted)] mt-2">
                     — {note.senderName}
                   </p>
@@ -156,10 +157,10 @@ export default function HomePage() {
         {/* Recent Photos */}
         <div className="glass-card-static p-6 slide-up delay-400">
           <div className="flex items-center justify-between mb-5">
-            <h3 className="text-lg font-medium text-[var(--text-primary)]">
+            <h3 className="text-lg font-medium text-white">
               📸 Recent Photos
             </h3>
-            <Link href="/gallery" className="text-[var(--accent)] text-sm font-medium hover:underline">
+            <Link href="/gallery" className="text-[var(--accent-gold)] text-sm font-medium hover:underline">
               View all →
             </Link>
           </div>

@@ -18,10 +18,10 @@ interface CalendarEvent {
 
 const PRESET_BACKGROUNDS = [
     { name: 'None', url: '', color: 'transparent' },
-    { name: 'Ocean Blue', url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1920', color: '#1a365d' },
-    { name: 'Soft Pink', url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1920', color: '#c06c84' },
-    { name: 'Golden Hour', url: 'https://images.unsplash.com/photo-1495616811223-4d98c6e9c869?w=1920', color: '#c9a962' },
-    { name: 'Lavender', url: 'https://images.unsplash.com/photo-1468421870903-4df1664ac249?w=1920', color: '#6b5b95' },
+    { name: 'Northern Lights', url: 'https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=1920', color: '#1a365d' },
+    { name: 'Starry Night', url: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1920', color: '#1a1a2e' },
+    { name: 'Purple Dreams', url: 'https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?w=1920', color: '#581c87' },
+    { name: 'Ocean Dark', url: 'https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=1920', color: '#0c4a6e' },
 ];
 
 export default function CalendarPage() {
@@ -101,7 +101,7 @@ export default function CalendarPage() {
     if (loading || !user) {
         return (
             <div className="min-h-screen flex items-center justify-center">
-                <div className="text-white text-xl">Loading...</div>
+                <div className="text-white/60 text-xl">Loading...</div>
             </div>
         );
     }
@@ -116,22 +116,30 @@ export default function CalendarPage() {
 
     return (
         <div
-            className="min-h-screen py-8 px-6"
+            className="min-h-screen py-8 px-6 relative z-10"
             style={{
-                backgroundImage: calendarBackground ? `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url(${calendarBackground})` : undefined,
+                backgroundImage: calendarBackground ? `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(${calendarBackground})` : undefined,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 backgroundAttachment: 'fixed',
             }}
         >
+            {/* Background Orbs (when no custom bg) */}
+            {!calendarBackground && (
+                <div className="bg-orbs">
+                    <div className="orb orb-1"></div>
+                    <div className="orb orb-2"></div>
+                </div>
+            )}
+
             <div className="max-w-4xl mx-auto">
                 {/* Header */}
                 <div className="flex items-center justify-between mb-8 slide-up">
                     <div>
-                        <h1 className="text-4xl font-semibold text-white mb-1">
+                        <h1 className="text-4xl font-medium text-white glow-text mb-2">
                             Our Calendar
                         </h1>
-                        <p className="text-white/70">Track our special moments</p>
+                        <p className="text-[var(--text-muted)]">Track our special moments</p>
                     </div>
                     <button
                         onClick={() => setShowBgPicker(true)}
@@ -147,16 +155,16 @@ export default function CalendarPage() {
                     <div className="flex items-center justify-between mb-8">
                         <button
                             onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
-                            className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors text-[var(--text-primary)]"
+                            className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-white/10 transition-colors text-white"
                         >
                             ←
                         </button>
-                        <h2 className="text-2xl font-semibold text-[var(--text-primary)]">
+                        <h2 className="text-2xl font-medium text-white">
                             {format(currentMonth, 'MMMM yyyy')}
                         </h2>
                         <button
                             onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
-                            className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors text-[var(--text-primary)]"
+                            className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-white/10 transition-colors text-white"
                         >
                             →
                         </button>
@@ -194,7 +202,7 @@ export default function CalendarPage() {
                                     {dayEvents.length > 0 && !isToday(day) && (
                                         <div className="absolute bottom-1 flex gap-0.5">
                                             {dayEvents.slice(0, 3).map((_, i) => (
-                                                <span key={i} className="w-1 h-1 bg-[var(--accent)] rounded-full" />
+                                                <span key={i} className="w-1 h-1 bg-[var(--accent-rose)] rounded-full" />
                                             ))}
                                         </div>
                                     )}
@@ -206,7 +214,7 @@ export default function CalendarPage() {
 
                 {/* Special Dates */}
                 <div className="glass-card-static p-6 mt-6 slide-up delay-200">
-                    <h3 className="text-lg font-medium text-[var(--text-primary)] mb-4">
+                    <h3 className="text-lg font-medium text-white mb-4">
                         💕 Special Dates
                     </h3>
                     <div className="space-y-2">
@@ -216,10 +224,10 @@ export default function CalendarPage() {
                             </p>
                         ) : (
                             events.filter(e => e.isSpecial).map(event => (
-                                <div key={event.id} className="flex items-center gap-4 p-3 bg-amber-50 rounded-xl">
+                                <div key={event.id} className="flex items-center gap-4 p-4 bg-[var(--accent-gold)]/10 rounded-xl border border-[var(--accent-gold)]/20">
                                     <span className="text-xl">💕</span>
                                     <div className="flex-1">
-                                        <p className="font-medium text-[var(--text-primary)]">{event.title}</p>
+                                        <p className="font-medium text-white">{event.title}</p>
                                         <p className="text-sm text-[var(--text-muted)]">
                                             {format(event.date, 'MMMM d, yyyy')}
                                         </p>
@@ -241,17 +249,17 @@ export default function CalendarPage() {
             {showEventModal && selectedDate && (
                 <div className="modal-overlay" onClick={() => setShowEventModal(false)}>
                     <div className="glass-card-static p-6 max-w-md w-full mx-4" onClick={(e) => e.stopPropagation()}>
-                        <h3 className="text-xl font-semibold text-[var(--text-primary)] mb-6">
+                        <h3 className="text-xl font-medium text-white mb-6">
                             {format(selectedDate, 'MMMM d, yyyy')}
                         </h3>
 
                         {getEventsForDate(selectedDate).length > 0 && (
                             <div className="mb-6 space-y-2">
                                 {getEventsForDate(selectedDate).map(event => (
-                                    <div key={event.id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
+                                    <div key={event.id} className="flex items-center gap-3 p-3 bg-white/5 rounded-xl">
                                         <span>{event.isSpecial ? '💕' : '📌'}</span>
                                         <div className="flex-1">
-                                            <p className="font-medium text-[var(--text-primary)]">{event.title}</p>
+                                            <p className="font-medium text-white">{event.title}</p>
                                             {event.description && (
                                                 <p className="text-sm text-[var(--text-muted)]">{event.description}</p>
                                             )}
@@ -281,9 +289,9 @@ export default function CalendarPage() {
                                     type="checkbox"
                                     checked={newEvent.isSpecial}
                                     onChange={(e) => setNewEvent({ ...newEvent, isSpecial: e.target.checked })}
-                                    className="w-5 h-5 accent-[var(--accent)] rounded"
+                                    className="w-5 h-5 accent-[var(--accent-gold)] rounded"
                                 />
-                                <span className="text-[var(--text-primary)]">💕 Mark as special date</span>
+                                <span className="text-[var(--text-secondary)]">💕 Mark as special date</span>
                             </label>
                             <div className="flex gap-3 pt-2">
                                 <button onClick={() => setShowEventModal(false)} className="btn-outline flex-1">
@@ -302,7 +310,7 @@ export default function CalendarPage() {
             {showBgPicker && (
                 <div className="modal-overlay" onClick={() => setShowBgPicker(false)}>
                     <div className="glass-card-static p-6 max-w-lg w-full mx-4" onClick={(e) => e.stopPropagation()}>
-                        <h3 className="text-xl font-semibold text-[var(--text-primary)] mb-6">
+                        <h3 className="text-xl font-medium text-white mb-6">
                             Choose Background
                         </h3>
 
@@ -314,17 +322,17 @@ export default function CalendarPage() {
                                         setCalendarBackground(bg.url || null);
                                         setShowBgPicker(false);
                                     }}
-                                    className={`aspect-video rounded-xl overflow-hidden relative group border-2 transition-all ${calendarBackground === bg.url ? 'border-[var(--accent)]' : 'border-transparent'
+                                    className={`aspect-video rounded-xl overflow-hidden relative group border-2 transition-all ${calendarBackground === bg.url ? 'border-[var(--accent-gold)]' : 'border-transparent'
                                         }`}
                                 >
                                     {bg.url ? (
                                         <img src={bg.url} alt={bg.name} className="w-full h-full object-cover" />
                                     ) : (
-                                        <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-                                            <span className="text-gray-400 text-2xl">✕</span>
+                                        <div className="w-full h-full bg-[var(--bg-dark)] flex items-center justify-center">
+                                            <span className="text-[var(--text-muted)] text-2xl">✕</span>
                                         </div>
                                     )}
-                                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                                         <span className="text-white font-medium text-sm">{bg.name}</span>
                                     </div>
                                 </button>

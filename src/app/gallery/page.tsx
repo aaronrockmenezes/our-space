@@ -138,19 +138,25 @@ export default function GalleryPage() {
     if (loading || !user) {
         return (
             <div className="min-h-screen flex items-center justify-center">
-                <div className="text-white text-xl">Loading...</div>
+                <div className="text-white/60 text-xl">Loading...</div>
             </div>
         );
     }
 
     return (
-        <div className="max-w-5xl mx-auto px-6 py-8">
+        <div className="max-w-5xl mx-auto px-6 py-8 relative z-10">
+            {/* Background Orbs */}
+            <div className="bg-orbs">
+                <div className="orb orb-1"></div>
+                <div className="orb orb-2"></div>
+            </div>
+
             {/* Header */}
-            <div className="text-center mb-8 slide-up">
-                <h1 className="text-4xl font-semibold text-white mb-2">
+            <div className="text-center mb-10 slide-up">
+                <h1 className="text-4xl font-medium text-white glow-text mb-3">
                     Our Gallery
                 </h1>
-                <p className="text-white/70">Memories we've shared together</p>
+                <p className="text-[var(--text-muted)]">Memories we've shared together</p>
             </div>
 
             {/* Upload Area */}
@@ -162,13 +168,13 @@ export default function GalleryPage() {
                 <input {...getInputProps()} />
                 {uploading ? (
                     <div className="flex items-center justify-center gap-3">
-                        <div className="w-5 h-5 border-2 border-[var(--accent)] border-t-transparent rounded-full animate-spin"></div>
+                        <div className="w-5 h-5 border-2 border-[var(--accent-gold)] border-t-transparent rounded-full animate-spin"></div>
                         <span className="text-[var(--text-secondary)]">Uploading...</span>
                     </div>
                 ) : (
                     <>
                         <div className="text-4xl mb-3">📁</div>
-                        <p className="text-[var(--text-primary)] font-medium mb-1">
+                        <p className="text-white font-medium mb-1">
                             {isDragActive ? 'Drop files here' : 'Drag & drop files here'}
                         </p>
                         <p className="text-[var(--text-muted)] text-sm">
@@ -219,7 +225,7 @@ export default function GalleryPage() {
                                                 e.stopPropagation();
                                                 deleteMedia(photo);
                                             }}
-                                            className="bg-red-500/80 text-white text-sm px-3 py-1 rounded-lg hover:bg-red-600 transition-colors"
+                                            className="bg-red-500/80 text-white text-sm px-3 py-1.5 rounded-lg hover:bg-red-600 transition-colors"
                                         >
                                             Delete
                                         </button>
@@ -249,14 +255,14 @@ export default function GalleryPage() {
                                     {currentlyPlaying === track.id ? '⏸' : '▶'}
                                 </button>
                                 <div className="flex-1 min-w-0">
-                                    <p className="font-medium text-[var(--text-primary)] truncate">{track.name}</p>
+                                    <p className="font-medium text-white truncate">{track.name}</p>
                                     <p className="text-sm text-[var(--text-muted)]">
                                         {currentlyPlaying === track.id ? '♪ Now playing' : 'Click to play'}
                                     </p>
                                 </div>
                                 <button
                                     onClick={() => deleteMedia(track)}
-                                    className="text-red-500 hover:text-red-600 p-2 hover:bg-red-50 rounded-lg transition-colors"
+                                    className="text-red-400 hover:text-red-500 p-2 hover:bg-red-500/10 rounded-lg transition-colors"
                                 >
                                     ✕
                                 </button>
@@ -273,7 +279,7 @@ export default function GalleryPage() {
                         <img
                             src={selectedPhoto.url}
                             alt={selectedPhoto.name}
-                            className="max-w-full max-h-[80vh] object-contain rounded-2xl shadow-2xl"
+                            className="max-w-full max-h-[80vh] object-contain rounded-2xl"
                         />
                         <div className="text-center mt-4">
                             <p className="text-white font-medium mb-3">{selectedPhoto.name}</p>

@@ -36,12 +36,12 @@ export default function RelationshipCounter({ startDate }: RelationshipCounterPr
     }, [startDate]);
 
     return (
-        <div className="glass-card-static p-8">
-            <div className="text-center mb-6">
-                <h3 className="text-xl text-[var(--text-secondary)] mb-1">Together For</h3>
+        <div className="glass-card-static p-8 md:p-10">
+            <div className="text-center mb-8">
+                <h3 className="text-xl text-[var(--text-muted)] uppercase tracking-widest text-sm mb-2">Together For</h3>
             </div>
 
-            <div className="flex justify-center gap-6 md:gap-10 mb-6">
+            <div className="flex justify-center gap-6 md:gap-12 mb-8">
                 {duration.years > 0 && (
                     <div className="stat-card">
                         <div className="stat-number">{duration.years}</div>
@@ -62,12 +62,12 @@ export default function RelationshipCounter({ startDate }: RelationshipCounterPr
                 </div>
             </div>
 
-            <div className="ornament text-sm">
+            <div className="ornament text-sm mb-6">
                 <span>✦</span>
             </div>
 
-            <p className="text-center mt-4 text-[var(--accent)] font-medium">
-                {duration.totalDays.toLocaleString()} beautiful days together ✨
+            <p className="text-center text-[var(--text-secondary)] font-light">
+                <span className="text-[var(--accent-gold)]">{duration.totalDays.toLocaleString()}</span> beautiful days together
             </p>
         </div>
     );

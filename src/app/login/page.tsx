@@ -17,39 +17,40 @@ export default function LoginPage() {
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
-                <div className="text-white text-xl">Loading...</div>
+                <div className="text-white/60 text-xl">Loading...</div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center px-4 -mt-20">
-            {/* Background decoration */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl"></div>
-                <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"></div>
+        <div className="min-h-screen flex items-center justify-center px-4 relative">
+            {/* Animated Background Orbs */}
+            <div className="bg-orbs">
+                <div className="orb orb-1"></div>
+                <div className="orb orb-2"></div>
+                <div className="orb orb-3"></div>
             </div>
 
-            <div className="glass-card p-10 max-w-md w-full text-center slide-up relative">
+            <div className="glass-card p-12 max-w-md w-full text-center slide-up relative z-10">
                 {/* Logo */}
-                <div className="mb-8">
-                    <div className="text-6xl mb-4 float">💕</div>
-                    <h1 className="text-4xl font-semibold text-[var(--primary)]">
+                <div className="mb-10">
+                    <div className="text-5xl mb-6">💕</div>
+                    <h1 className="text-5xl font-medium text-white glow-text mb-3">
                         Our Space
                     </h1>
-                    <p className="text-[var(--text-secondary)] mt-2 text-lg">
+                    <p className="text-[var(--text-secondary)] text-lg">
                         A special place just for us
                     </p>
                 </div>
 
                 {/* Ornament Divider */}
                 <div className="ornament my-8">
-                    <span>✦</span>
+                    <span className="text-sm">✦</span>
                 </div>
 
                 {/* Quote */}
-                <p className="text-lg mb-10 text-[var(--text-secondary)] italic leading-relaxed">
-                    "Every love story is beautiful, but ours is my favorite"
+                <p className="text-lg mb-10 text-[var(--text-muted)] italic leading-relaxed font-light">
+                    "Every love story is beautiful,<br />but ours is my favorite"
                 </p>
 
                 {/* Google Sign In Button */}
@@ -79,8 +80,8 @@ export default function LoginPage() {
                 </button>
 
                 {/* Footer */}
-                <p className="mt-8 text-sm text-[var(--text-muted)]">
-                    Sign in with your Google account to access our special space
+                <p className="mt-10 text-sm text-[var(--text-muted)]">
+                    Sign in to access our special space
                 </p>
             </div>
         </div>

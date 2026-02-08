@@ -1,65 +1,183 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
+import { useAuth } from '@/contexts/AuthContext';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import RelationshipCounter from '@/components/RelationshipCounter';
+import { collection, query, orderBy, limit, getDocs, where } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+
+// Your relationship start date 💕
+const RELATIONSHIP_START_DATE = new Date('2022-11-05');
+
+export default function HomePage() {
+  const { user, loading } = useAuth();
+  const router = useRouter();
+  const [recentNotes, setRecentNotes] = useState<any[]>([]);
+  const [recentPhotos, setRecentPhotos] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push('/login');
+    }
+  }, [user, loading, router]);
+
+  useEffect(() => {
+    if (user) {
+      loadRecentContent();
+    }
+  }, [user]);
+
+  const loadRecentContent = async () => {
+    try {
+      const notesQuery = query(
+        collection(db, 'loveNotes'),
+        orderBy('createdAt', 'desc'),
+        limit(2)
+      );
+      const notesSnap = await getDocs(notesQuery);
+      setRecentNotes(notesSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+
+      const photosQuery = query(
+        collection(db, 'media'),
+        where('type', '==', 'image'),
+        orderBy('uploadedAt', 'desc'),
+        limit(4)
+      );
+      const photosSnap = await getDocs(photosQuery);
+      setRecentPhotos(photosSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    } catch (error) {
+      console.error('Error loading content:', error);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-white text-xl">Loading...</div>
+      </div>
+    );
+  }
+
+  if (!user) return null;
+
+  const features = [
+    {
+      href: '/gallery',
+      icon: '📸',
+      title: 'Gallery',
+      description: 'Our photos & music',
+    },
+    {
+      href: '/calendar',
+      icon: '📅',
+      title: 'Calendar',
+      description: 'Special dates',
+    },
+    {
+      href: '/notes',
+      icon: '💌',
+      title: 'Love Notes',
+      description: 'Sweet messages',
+    },
+  ];
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div className="max-w-5xl mx-auto px-6 py-8">
+      {/* Background decoration */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10">
+        <div className="absolute top-20 right-1/4 w-72 h-72 bg-amber-500/5 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-1/3 left-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl"></div>
+      </div>
+
+      {/* Welcome Section */}
+      <div className="text-center mb-10 slide-up">
+        <h1 className="text-4xl md:text-5xl font-semibold text-white mb-3">
+          Welcome back, {user.displayName?.split(' ')[0]} 💕
+        </h1>
+        <p className="text-white/70 text-lg italic">
+          "In all the world, there is no heart for me like yours"
+        </p>
+      </div>
+
+      {/* Relationship Counter */}
+      <div className="mb-10 slide-up delay-100">
+        <RelationshipCounter startDate={RELATIONSHIP_START_DATE} />
+      </div>
+
+      {/* Quick Access Cards */}
+      <div className="grid md:grid-cols-3 gap-5 mb-10">
+        {features.map((feature, index) => (
+          <Link
+            key={feature.href}
+            href={feature.href}
+            className={`glass-card feature-card slide-up delay-${(index + 2) * 100}`}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            <div className="feature-icon">
+              {feature.icon}
+            </div>
+            <h3 className="feature-title">{feature.title}</h3>
+            <p className="feature-desc">{feature.description}</p>
+          </Link>
+        ))}
+      </div>
+
+      {/* Recent Activity */}
+      <div className="grid md:grid-cols-2 gap-5">
+        {/* Recent Notes */}
+        <div className="glass-card-static p-6 slide-up delay-400">
+          <div className="flex items-center justify-between mb-5">
+            <h3 className="text-lg font-medium text-[var(--text-primary)]">
+              💌 Recent Notes
+            </h3>
+            <Link href="/notes" className="text-[var(--accent)] text-sm font-medium hover:underline">
+              View all →
+            </Link>
+          </div>
+          {recentNotes.length > 0 ? (
+            <div className="space-y-3">
+              {recentNotes.map(note => (
+                <div key={note.id} className="note-card !p-4">
+                  <p className="text-[var(--text-primary)] line-clamp-2 relative z-10">{note.content}</p>
+                  <p className="text-xs text-[var(--text-muted)] mt-2">
+                    — {note.senderName}
+                  </p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-[var(--text-muted)] text-center py-8">
+              No notes yet. Send the first one! 💕
+            </p>
+          )}
         </div>
-      </main>
+
+        {/* Recent Photos */}
+        <div className="glass-card-static p-6 slide-up delay-400">
+          <div className="flex items-center justify-between mb-5">
+            <h3 className="text-lg font-medium text-[var(--text-primary)]">
+              📸 Recent Photos
+            </h3>
+            <Link href="/gallery" className="text-[var(--accent)] text-sm font-medium hover:underline">
+              View all →
+            </Link>
+          </div>
+          {recentPhotos.length > 0 ? (
+            <div className="grid grid-cols-2 gap-2">
+              {recentPhotos.map(photo => (
+                <div key={photo.id} className="photo-card aspect-square">
+                  <img src={photo.url} alt="" />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-[var(--text-muted)] text-center py-8">
+              No photos yet. Upload a memory! 📸
+            </p>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

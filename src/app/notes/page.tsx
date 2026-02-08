@@ -82,51 +82,59 @@ export default function NotesPage() {
     return (
         <div className="min-h-screen bg-[#0a0a0f] flex flex-col" style={{ paddingTop: '5rem' }}>
             {/* Header */}
-            <div className="text-center py-6">
-                <h1 className="text-2xl font-semibold text-white mb-2">Love Notes</h1>
+            <div className="text-center py-8">
+                <h1 className="text-3xl font-semibold text-white mb-3">Love Notes</h1>
                 <p className="text-white/40 text-sm">Leave sweet messages for each other</p>
             </div>
 
             {/* Messages Container with vertical demarcation lines (desktop only) */}
             <div className="flex-1 relative flex justify-center">
                 {/* Left vertical line - desktop only */}
-                <div className="hidden md:block absolute left-1/2 -translate-x-[280px] top-0 bottom-32 w-px bg-gradient-to-b from-transparent via-white/[0.08] to-transparent"></div>
+                <div className="hidden md:block absolute left-1/2 -translate-x-[300px] top-0 bottom-36 w-px bg-gradient-to-b from-transparent via-white/[0.06] to-transparent" />
 
                 {/* Right vertical line - desktop only */}
-                <div className="hidden md:block absolute left-1/2 translate-x-[280px] top-0 bottom-32 w-px bg-gradient-to-b from-transparent via-white/[0.08] to-transparent"></div>
+                <div className="hidden md:block absolute left-1/2 translate-x-[300px] top-0 bottom-36 w-px bg-gradient-to-b from-transparent via-white/[0.06] to-transparent" />
 
                 {/* Messages area */}
-                <div className="w-full max-w-[520px] px-6 pb-40">
+                <div className="w-full max-w-[560px] px-6 pb-44">
                     {notes.length === 0 ? (
-                        <div className="text-center py-20">
-                            <div className="w-16 h-16 mx-auto mb-5 rounded-2xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-center">
-                                <span className="text-2xl opacity-40">💌</span>
+                        <div className="text-center py-24">
+                            <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-center">
+                                <span className="text-3xl opacity-40">💌</span>
                             </div>
-                            <p className="text-white/30 text-sm">No notes yet</p>
-                            <p className="text-white/20 text-xs mt-1">Be the first to send a love note</p>
+                            <p className="text-white/30 text-base">No notes yet</p>
+                            <p className="text-white/20 text-sm mt-2">Be the first to send a love note</p>
                         </div>
                     ) : (
-                        <div className="space-y-4">
+                        <div className="space-y-5">
                             {notes.map(note => {
                                 const mine = note.senderId === user.uid;
                                 return (
                                     <div key={note.id} className={`flex ${mine ? 'justify-end' : 'justify-start'} group`}>
                                         <div
-                                            className={`max-w-[75%] ${mine
-                                                ? 'bg-gradient-to-br from-rose-500/20 to-purple-500/20 border-rose-500/20'
-                                                : 'bg-white/[0.05] border-white/[0.08]'
-                                                } border rounded-2xl ${mine ? 'rounded-br-md' : 'rounded-bl-md'} px-4 py-3`}
-                                            style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}
+                                            className={`inline-block max-w-[70%] ${mine
+                                                    ? 'bg-gradient-to-br from-rose-500/25 to-purple-500/25 border-rose-500/30'
+                                                    : 'bg-white/[0.06] border-white/[0.1]'
+                                                } border rounded-2xl ${mine ? 'rounded-br-sm' : 'rounded-bl-sm'} px-5 py-4`}
                                         >
-                                            <p className="text-white/90 text-[15px] leading-relaxed whitespace-pre-wrap">{note.content}</p>
-                                            <div className={`flex items-center gap-2 mt-2 ${mine ? 'justify-end' : ''}`}>
-                                                <span className="text-white/30 text-[11px]">{format(note.createdAt, 'MMM d, h:mm a')}</span>
+                                            <p
+                                                className="text-white/95 text-base leading-relaxed"
+                                                style={{
+                                                    wordBreak: 'break-word',
+                                                    overflowWrap: 'break-word',
+                                                    whiteSpace: 'pre-wrap'
+                                                }}
+                                            >
+                                                {note.content}
+                                            </p>
+                                            <div className={`flex items-center gap-3 mt-3 pt-2 border-t ${mine ? 'border-white/10 justify-end' : 'border-white/5'}`}>
+                                                <span className="text-white/35 text-xs">{format(note.createdAt, 'MMM d, h:mm a')}</span>
                                                 {mine && (
                                                     <button
                                                         onClick={() => deleteNote(note.id)}
-                                                        className="text-white/20 hover:text-red-400 text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                                                        className="text-white/25 hover:text-red-400 text-xs opacity-0 group-hover:opacity-100 transition-all"
                                                     >
-                                                        ✕
+                                                        Delete
                                                     </button>
                                                 )}
                                             </div>
@@ -141,35 +149,35 @@ export default function NotesPage() {
             </div>
 
             {/* Compose - Fixed at bottom, CENTERED */}
-            <div className="fixed bottom-0 left-0 right-0 md:bottom-0 bg-gradient-to-t from-[#0a0a0f] via-[#0a0a0f]/95 to-transparent pt-8 pb-6 md:pb-8 flex justify-center">
-                <div className="w-full max-w-[520px] px-6">
-                    <div className="flex items-end gap-3 bg-white/[0.04] backdrop-blur-xl border border-white/[0.1] rounded-2xl p-2.5 shadow-xl shadow-black/30">
+            <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-[#0a0a0f] via-[#0a0a0f]/98 to-transparent pt-10 pb-8 md:pb-10 flex justify-center">
+                <div className="w-full max-w-[560px] px-6">
+                    <div className="flex items-end gap-4 bg-white/[0.04] backdrop-blur-2xl border border-white/[0.1] rounded-2xl p-3 shadow-2xl shadow-black/40">
                         <textarea
                             value={newNote}
                             onChange={e => setNewNote(e.target.value)}
                             onKeyPress={handleKeyPress}
                             placeholder="Write a love note..."
-                            className="flex-1 bg-transparent px-3 py-2.5 text-white text-[15px] resize-none focus:outline-none placeholder:text-white/30"
+                            className="flex-1 bg-transparent px-4 py-3 text-white text-base resize-none focus:outline-none placeholder:text-white/30"
                             rows={1}
                             maxLength={500}
-                            style={{ minHeight: '44px', maxHeight: '100px' }}
+                            style={{ minHeight: '48px', maxHeight: '120px' }}
                         />
                         <button
                             onClick={sendNote}
                             disabled={!newNote.trim() || sending}
-                            className="w-11 h-11 rounded-xl bg-gradient-to-r from-rose-500 to-purple-500 text-white flex items-center justify-center transition-all hover:opacity-90 disabled:opacity-30 disabled:cursor-not-allowed shrink-0 shadow-lg shadow-rose-500/25"
+                            className="w-12 h-12 rounded-xl bg-gradient-to-r from-rose-500 to-purple-500 text-white flex items-center justify-center transition-all hover:scale-105 hover:shadow-lg hover:shadow-rose-500/30 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:scale-100 shrink-0"
                         >
                             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
                             </svg>
                         </button>
                     </div>
-                    <p className="text-center text-white/20 text-[10px] mt-2">{newNote.length}/500</p>
+                    <p className="text-center text-white/25 text-xs mt-3">{newNote.length}/500</p>
                 </div>
             </div>
 
             {/* Bottom padding for mobile nav */}
-            <div className="h-16 md:hidden"></div>
+            <div className="h-20 md:hidden" />
         </div>
     );
 }

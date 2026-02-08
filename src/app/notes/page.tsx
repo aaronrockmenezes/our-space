@@ -24,35 +24,22 @@ export default function NotesPage() {
     const [sending, setSending] = useState(false);
 
     useEffect(() => {
-        if (!loading && !user) {
-            router.push('/login');
-        }
+        if (!loading && !user) router.push('/login');
     }, [user, loading, router]);
 
     useEffect(() => {
-        if (user) {
-            loadNotes();
-        }
+        if (user) loadNotes();
     }, [user]);
 
     const loadNotes = async () => {
         try {
             const notesQuery = query(collection(db, 'loveNotes'), orderBy('createdAt', 'desc'));
             const snapshot = await getDocs(notesQuery);
-
-            const loadedNotes = snapshot.docs.map(doc => {
-                const data = doc.data();
-                return {
-                    id: doc.id,
-                    content: data.content,
-                    senderId: data.senderId,
-                    senderName: data.senderName,
-                    senderPhoto: data.senderPhoto,
-                    createdAt: data.createdAt.toDate(),
-                };
-            });
-
-            setNotes(loadedNotes);
+            setNotes(snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data(),
+                createdAt: doc.data().createdAt.toDate(),
+            } as LoveNote)));
         } catch (error) {
             console.error('Error loading notes:', error);
         }
@@ -60,7 +47,6 @@ export default function NotesPage() {
 
     const sendNote = async () => {
         if (!newNote.trim() || !user) return;
-
         setSending(true);
         try {
             await addDoc(collection(db, 'loveNotes'), {
@@ -70,137 +56,88 @@ export default function NotesPage() {
                 senderPhoto: user.photoURL || '',
                 createdAt: Timestamp.now(),
             });
-
             setNewNote('');
             loadNotes();
         } catch (error) {
-            console.error('Error sending note:', error);
+            console.error('Error:', error);
         } finally {
             setSending(false);
         }
     };
 
-    const deleteNote = async (noteId: string) => {
-        try {
-            await deleteDoc(doc(db, 'loveNotes', noteId));
-            loadNotes();
-        } catch (error) {
-            console.error('Error deleting note:', error);
-        }
+    const deleteNote = async (id: string) => {
+        await deleteDoc(doc(db, 'loveNotes', id));
+        loadNotes();
     };
 
     if (loading || !user) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="text-white/60 text-xl">Loading...</div>
-            </div>
-        );
+        return <div className="min-h-screen flex items-center justify-center bg-[#0a0a0f]">
+            <div className="text-white/40 text-sm">Loading...</div>
+        </div>;
     }
 
     return (
-        <div className="max-w-2xl mx-auto px-6 py-8 relative z-10">
-            {/* Background Orbs */}
-            <div className="bg-orbs">
-                <div className="orb orb-1"></div>
-                <div className="orb orb-2"></div>
-            </div>
-
-            {/* Header */}
-            <div className="text-center mb-10 slide-up">
-                <h1 className="text-4xl font-medium text-white glow-text mb-3">
-                    Love Notes
-                </h1>
-                <p className="text-[var(--text-muted)] italic font-light">
-                    "Words are our most inexhaustible source of magic"
-                </p>
-            </div>
-
-            {/* Compose Note */}
-            <div className="glass-card-static p-6 mb-8 slide-up delay-100">
-                <h3 className="text-lg font-medium text-white mb-4">
-                    ✍️ Write a Note
-                </h3>
-                <textarea
-                    value={newNote}
-                    onChange={(e) => setNewNote(e.target.value)}
-                    placeholder="Write something sweet..."
-                    className="input-modern min-h-[120px] resize-none mb-4"
-                    maxLength={500}
-                />
-                <div className="flex items-center justify-between">
-                    <span className="text-sm text-[var(--text-muted)]">
-                        {newNote.length}/500
-                    </span>
-                    <button
-                        onClick={sendNote}
-                        disabled={!newNote.trim() || sending}
-                        className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                        {sending ? 'Sending...' : '💕 Send'}
-                    </button>
+        <div className="min-h-screen bg-[#0a0a0f] pb-20 md:pb-8">
+            <div className="max-w-lg mx-auto px-6 py-12">
+                {/* Header */}
+                <div className="text-center mb-10">
+                    <h1 className="text-xl font-light text-white mb-1">Love Notes</h1>
+                    <p className="text-white/30 text-xs">Sweet words for each other</p>
                 </div>
-            </div>
 
-            {/* Notes List */}
-            <div className="space-y-4 slide-up delay-200">
-                {notes.length === 0 ? (
-                    <div className="glass-card-static p-12 text-center">
-                        <div className="text-5xl mb-4">💌</div>
-                        <p className="text-white text-lg font-medium mb-1">
-                            No notes yet
-                        </p>
-                        <p className="text-[var(--text-muted)]">
-                            Be the first to write something sweet!
-                        </p>
+                {/* Compose */}
+                <div className="mb-10">
+                    <textarea
+                        value={newNote}
+                        onChange={(e) => setNewNote(e.target.value)}
+                        placeholder="Write something sweet..."
+                        className="w-full bg-transparent border border-white/10 rounded-xl p-4 text-white/80 text-sm resize-none focus:outline-none focus:border-white/20 placeholder:text-white/20"
+                        rows={3}
+                        maxLength={500}
+                    />
+                    <div className="flex items-center justify-between mt-3">
+                        <span className="text-white/20 text-xs">{newNote.length}/500</span>
+                        <button
+                            onClick={sendNote}
+                            disabled={!newNote.trim() || sending}
+                            className="px-5 py-2 rounded-full text-xs font-medium bg-white/10 text-white/70 hover:bg-white/15 hover:text-white disabled:opacity-30 transition-all"
+                        >
+                            {sending ? '...' : 'Send 💕'}
+                        </button>
                     </div>
+                </div>
+
+                {/* Notes */}
+                {notes.length === 0 ? (
+                    <p className="text-center text-white/30 text-sm py-16">
+                        No notes yet. Send the first one!
+                    </p>
                 ) : (
-                    notes.map((note, index) => {
-                        const isFromMe = note.senderId === user.uid;
-
-                        return (
-                            <div
-                                key={note.id}
-                                className={`note-card ${isFromMe ? 'ml-6' : 'mr-6'}`}
-                                style={{ animationDelay: `${index * 0.05}s` }}
-                            >
-                                <div className="flex items-start gap-4 relative z-10">
+                    <div className="space-y-4">
+                        {notes.map((note) => {
+                            const isFromMe = note.senderId === user.uid;
+                            return (
+                                <div key={note.id} className={`flex gap-3 ${isFromMe ? 'flex-row-reverse' : ''}`}>
                                     {note.senderPhoto ? (
-                                        <img
-                                            src={note.senderPhoto}
-                                            alt={note.senderName}
-                                            className="w-11 h-11 rounded-full border-2 border-[var(--accent-gold)]/30 flex-shrink-0"
-                                        />
+                                        <img src={note.senderPhoto} alt="" className="w-8 h-8 rounded-full opacity-60 flex-shrink-0" />
                                     ) : (
-                                        <div className="w-11 h-11 rounded-full bg-gradient-to-br from-[var(--accent-gold)] to-[var(--accent-rose)] flex items-center justify-center text-white font-medium flex-shrink-0">
-                                            {note.senderName[0]}
-                                        </div>
+                                        <div className="w-8 h-8 rounded-full bg-white/10 flex-shrink-0" />
                                     )}
-                                    <div className="flex-1 min-w-0">
-                                        <div className="flex items-center gap-2 mb-2">
-                                            <span className="font-medium text-white">
-                                                {isFromMe ? 'You' : note.senderName}
-                                            </span>
-                                            <span className="text-xs text-[var(--text-muted)]">
-                                                {format(note.createdAt, 'MMM d, h:mm a')}
-                                            </span>
+                                    <div className={`flex-1 ${isFromMe ? 'text-right' : ''}`}>
+                                        <div className={`inline-block p-4 rounded-2xl ${isFromMe ? 'bg-white/10' : 'bg-white/[0.03]'} max-w-[90%]`}>
+                                            <p className="text-white/70 text-sm leading-relaxed text-left">{note.content}</p>
                                         </div>
-                                        <p className="text-[var(--text-secondary)] leading-relaxed">
-                                            {note.content}
-                                        </p>
+                                        <div className={`flex items-center gap-2 mt-1 text-white/20 text-xs ${isFromMe ? 'justify-end' : ''}`}>
+                                            <span>{format(note.createdAt, 'MMM d')}</span>
+                                            {isFromMe && (
+                                                <button onClick={() => deleteNote(note.id)} className="hover:text-white/40">Delete</button>
+                                            )}
+                                        </div>
                                     </div>
-
-                                    {isFromMe && (
-                                        <button
-                                            onClick={() => deleteNote(note.id)}
-                                            className="text-red-400 hover:text-red-500 p-1 flex-shrink-0"
-                                        >
-                                            ✕
-                                        </button>
-                                    )}
                                 </div>
-                            </div>
-                        );
-                    })
+                            );
+                        })}
+                    </div>
                 )}
             </div>
         </div>

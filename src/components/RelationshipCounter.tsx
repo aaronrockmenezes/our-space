@@ -36,38 +36,32 @@ export default function RelationshipCounter({ startDate }: RelationshipCounterPr
     }, [startDate]);
 
     return (
-        <div className="glass-card-static p-8 md:p-10">
-            <div className="text-center mb-8">
-                <h3 className="text-xl text-[var(--text-muted)] uppercase tracking-widest text-sm mb-2">Together For</h3>
-            </div>
+        <div className="text-center">
+            <p className="text-white/30 text-xs uppercase tracking-widest mb-6">Together for</p>
 
-            <div className="flex justify-center gap-6 md:gap-12 mb-8">
+            <div className="flex justify-center items-baseline gap-8">
                 {duration.years > 0 && (
-                    <div className="stat-card">
-                        <div className="stat-number">{duration.years}</div>
-                        <div className="stat-label">{duration.years === 1 ? 'Year' : 'Years'}</div>
+                    <div>
+                        <span className="text-4xl font-light text-white">{duration.years}</span>
+                        <span className="text-white/30 text-xs ml-1">{duration.years === 1 ? 'year' : 'years'}</span>
                     </div>
                 )}
 
                 {(duration.years > 0 || duration.months > 0) && (
-                    <div className="stat-card">
-                        <div className="stat-number">{duration.months}</div>
-                        <div className="stat-label">{duration.months === 1 ? 'Month' : 'Months'}</div>
+                    <div>
+                        <span className="text-4xl font-light text-white">{duration.months}</span>
+                        <span className="text-white/30 text-xs ml-1">{duration.months === 1 ? 'month' : 'months'}</span>
                     </div>
                 )}
 
-                <div className="stat-card">
-                    <div className="stat-number">{duration.days}</div>
-                    <div className="stat-label">{duration.days === 1 ? 'Day' : 'Days'}</div>
+                <div>
+                    <span className="text-4xl font-light text-white">{duration.days}</span>
+                    <span className="text-white/30 text-xs ml-1">{duration.days === 1 ? 'day' : 'days'}</span>
                 </div>
             </div>
 
-            <div className="ornament text-sm mb-6">
-                <span>✦</span>
-            </div>
-
-            <p className="text-center text-[var(--text-secondary)] font-light">
-                <span className="text-[var(--accent-gold)]">{duration.totalDays.toLocaleString()}</span> beautiful days together
+            <p className="text-white/20 text-xs mt-6">
+                {duration.totalDays.toLocaleString()} days ✨
             </p>
         </div>
     );

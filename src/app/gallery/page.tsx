@@ -12,8 +12,6 @@ interface MediaItem {
     url: string;
     name: string;
     type: 'image' | 'audio';
-    uploadedAt: any;
-    uploadedBy: string;
 }
 
 const fileToBase64 = (file: File): Promise<string> => {
@@ -43,9 +41,7 @@ export default function GalleryPage() {
     }, [user, loading, router]);
 
     useEffect(() => {
-        if (user) {
-            loadMedia();
-        }
+        if (user) loadMedia();
     }, [user]);
 
     const loadMedia = async () => {
@@ -53,7 +49,6 @@ export default function GalleryPage() {
             const mediaQuery = query(collection(db, 'media'), orderBy('uploadedAt', 'desc'));
             const snapshot = await getDocs(mediaQuery);
             const items = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as MediaItem));
-
             setPhotos(items.filter(item => item.type === 'image'));
             setMusic(items.filter(item => item.type === 'audio'));
         } catch (error) {
@@ -64,61 +59,44 @@ export default function GalleryPage() {
     const onDrop = useCallback(async (acceptedFiles: File[]) => {
         if (!user) return;
         setUploading(true);
-
         try {
             for (const file of acceptedFiles) {
                 const isImage = file.type.startsWith('image/');
                 const isAudio = file.type.startsWith('audio/');
-
                 if (!isImage && !isAudio) continue;
-
                 if (file.size > 1024 * 1024) {
-                    alert(`File "${file.name}" is too large. Max size is 1MB.`);
+                    alert(`"${file.name}" is too large. Max 1MB.`);
                     continue;
                 }
-
                 const base64Data = await fileToBase64(file);
-
                 await addDoc(collection(db, 'media'), {
                     url: base64Data,
                     name: file.name,
                     type: isImage ? 'image' : 'audio',
                     uploadedAt: new Date(),
                     uploadedBy: user.uid,
-                    uploaderName: user.displayName,
                 });
             }
-
             loadMedia();
         } catch (error) {
             console.error('Error uploading:', error);
-            alert('Error uploading file. Please try again.');
         } finally {
             setUploading(false);
         }
     }, [user]);
 
     const deleteMedia = async (item: MediaItem) => {
-        if (!confirm('Delete this item?')) return;
-
-        try {
-            await deleteDoc(doc(db, 'media', item.id));
-            loadMedia();
-        } catch (error) {
-            console.error('Error deleting:', error);
-        }
+        if (!confirm('Delete?')) return;
+        await deleteDoc(doc(db, 'media', item.id));
+        loadMedia();
     };
 
     const playMusic = (item: MediaItem) => {
-        if (audio) {
-            audio.pause();
-        }
-
+        if (audio) audio.pause();
         if (currentlyPlaying === item.id) {
             setCurrentlyPlaying(null);
             return;
         }
-
         const newAudio = new Audio(item.url);
         newAudio.play();
         newAudio.onended = () => setCurrentlyPlaying(null);
@@ -128,169 +106,107 @@ export default function GalleryPage() {
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         onDrop,
-        accept: {
-            'image/*': ['.png', '.jpg', '.jpeg', '.gif', '.webp'],
-            'audio/*': ['.mp3', '.wav', '.m4a', '.ogg'],
-        },
+        accept: { 'image/*': [], 'audio/*': [] },
         maxSize: 1024 * 1024,
     });
 
     if (loading || !user) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="text-white/60 text-xl">Loading...</div>
-            </div>
-        );
+        return <div className="min-h-screen flex items-center justify-center bg-[#0a0a0f]">
+            <div className="text-white/40 text-sm">Loading...</div>
+        </div>;
     }
 
     return (
-        <div className="max-w-5xl mx-auto px-6 py-8 relative z-10">
-            {/* Background Orbs */}
-            <div className="bg-orbs">
-                <div className="orb orb-1"></div>
-                <div className="orb orb-2"></div>
-            </div>
-
-            {/* Header */}
-            <div className="text-center mb-10 slide-up">
-                <h1 className="text-4xl font-medium text-white glow-text mb-3">
-                    Our Gallery
-                </h1>
-                <p className="text-[var(--text-muted)]">Memories we've shared together</p>
-            </div>
-
-            {/* Upload Area */}
-            <div
-                {...getRootProps()}
-                className={`glass-card-static slide-up delay-100 mb-8 ${isDragActive ? 'upload-zone active' : 'upload-zone'
-                    }`}
-            >
-                <input {...getInputProps()} />
-                {uploading ? (
-                    <div className="flex items-center justify-center gap-3">
-                        <div className="w-5 h-5 border-2 border-[var(--accent-gold)] border-t-transparent rounded-full animate-spin"></div>
-                        <span className="text-[var(--text-secondary)]">Uploading...</span>
-                    </div>
-                ) : (
-                    <>
-                        <div className="text-4xl mb-3">📁</div>
-                        <p className="text-white font-medium mb-1">
-                            {isDragActive ? 'Drop files here' : 'Drag & drop files here'}
-                        </p>
-                        <p className="text-[var(--text-muted)] text-sm">
-                            or click to browse (max 1MB per file)
-                        </p>
-                    </>
-                )}
-            </div>
-
-            {/* Tabs */}
-            <div className="flex justify-center mb-8 slide-up delay-200">
-                <div className="tab-pills">
-                    <button
-                        onClick={() => setActiveTab('photos')}
-                        className={`tab-pill ${activeTab === 'photos' ? 'active' : ''}`}
-                    >
-                        📸 Photos ({photos.length})
-                    </button>
-                    <button
-                        onClick={() => setActiveTab('music')}
-                        className={`tab-pill ${activeTab === 'music' ? 'active' : ''}`}
-                    >
-                        🎵 Music ({music.length})
-                    </button>
+        <div className="min-h-screen bg-[#0a0a0f] pb-20 md:pb-8">
+            <div className="max-w-2xl mx-auto px-6 py-12">
+                {/* Header */}
+                <div className="text-center mb-10">
+                    <h1 className="text-xl font-light text-white mb-1">Gallery</h1>
+                    <p className="text-white/30 text-xs">Our memories</p>
                 </div>
-            </div>
 
-            {/* Content */}
-            {activeTab === 'photos' ? (
-                <div className="slide-up delay-300">
-                    {photos.length === 0 ? (
-                        <div className="glass-card-static p-12 text-center">
-                            <div className="text-5xl mb-4">📸</div>
-                            <p className="text-[var(--text-secondary)]">No photos yet. Upload your first memory!</p>
-                        </div>
+                {/* Upload */}
+                <div {...getRootProps()} className={`border border-dashed rounded-2xl p-8 text-center cursor-pointer transition-all duration-300 mb-8 ${isDragActive ? 'border-white/30 bg-white/5' : 'border-white/10 hover:border-white/20'
+                    }`}>
+                    <input {...getInputProps()} />
+                    {uploading ? (
+                        <p className="text-white/40 text-sm">Uploading...</p>
                     ) : (
-                        <div className="photo-grid">
+                        <>
+                            <p className="text-white/50 text-sm mb-1">{isDragActive ? 'Drop here' : 'Drop files or tap to upload'}</p>
+                            <p className="text-white/20 text-xs">Max 1MB</p>
+                        </>
+                    )}
+                </div>
+
+                {/* Tabs */}
+                <div className="flex gap-6 mb-6 border-b border-white/[0.06]">
+                    {(['photos', 'music'] as const).map(tab => (
+                        <button
+                            key={tab}
+                            onClick={() => setActiveTab(tab)}
+                            className={`pb-3 text-sm font-medium transition-colors ${activeTab === tab ? 'text-white border-b border-white' : 'text-white/40 hover:text-white/60'
+                                }`}
+                        >
+                            {tab === 'photos' ? `📸 ${photos.length}` : `🎵 ${music.length}`}
+                        </button>
+                    ))}
+                </div>
+
+                {/* Content */}
+                {activeTab === 'photos' ? (
+                    photos.length === 0 ? (
+                        <p className="text-center text-white/30 text-sm py-16">No photos yet</p>
+                    ) : (
+                        <div className="grid grid-cols-3 gap-1">
                             {photos.map(photo => (
                                 <div
                                     key={photo.id}
-                                    className="photo-card group"
+                                    className="aspect-square overflow-hidden cursor-pointer group relative"
                                     onClick={() => setSelectedPhoto(photo)}
                                 >
-                                    <img src={photo.url} alt={photo.name} />
-                                    <div className="overlay">
+                                    <img src={photo.url} alt="" className="w-full h-full object-cover" />
+                                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                         <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                deleteMedia(photo);
-                                            }}
-                                            className="bg-red-500/80 text-white text-sm px-3 py-1.5 rounded-lg hover:bg-red-600 transition-colors"
-                                        >
-                                            Delete
-                                        </button>
+                                            onClick={(e) => { e.stopPropagation(); deleteMedia(photo); }}
+                                            className="text-white/80 text-xs"
+                                        >Delete</button>
                                     </div>
                                 </div>
                             ))}
                         </div>
-                    )}
-                </div>
-            ) : (
-                <div className="space-y-3 slide-up delay-300">
-                    {music.length === 0 ? (
-                        <div className="glass-card-static p-12 text-center">
-                            <div className="text-5xl mb-4">🎵</div>
-                            <p className="text-[var(--text-secondary)]">No music yet. Upload our songs!</p>
-                        </div>
+                    )
+                ) : (
+                    music.length === 0 ? (
+                        <p className="text-center text-white/30 text-sm py-16">No music yet</p>
                     ) : (
-                        music.map(track => (
-                            <div
-                                key={track.id}
-                                className={`music-track ${currentlyPlaying === track.id ? 'playing' : ''}`}
-                            >
-                                <button
-                                    onClick={() => playMusic(track)}
-                                    className={`play-button ${currentlyPlaying === track.id ? 'active' : ''}`}
+                        <div className="space-y-2">
+                            {music.map(track => (
+                                <div
+                                    key={track.id}
+                                    className={`flex items-center gap-4 p-4 rounded-xl transition-colors ${currentlyPlaying === track.id ? 'bg-white/10' : 'bg-white/[0.02] hover:bg-white/[0.05]'
+                                        }`}
                                 >
-                                    {currentlyPlaying === track.id ? '⏸' : '▶'}
-                                </button>
-                                <div className="flex-1 min-w-0">
-                                    <p className="font-medium text-white truncate">{track.name}</p>
-                                    <p className="text-sm text-[var(--text-muted)]">
-                                        {currentlyPlaying === track.id ? '♪ Now playing' : 'Click to play'}
-                                    </p>
+                                    <button
+                                        onClick={() => playMusic(track)}
+                                        className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-sm hover:bg-white/20"
+                                    >
+                                        {currentlyPlaying === track.id ? '⏸' : '▶'}
+                                    </button>
+                                    <span className="flex-1 text-white/70 text-sm truncate">{track.name}</span>
+                                    <button onClick={() => deleteMedia(track)} className="text-white/30 hover:text-white/50 text-xs">✕</button>
                                 </div>
-                                <button
-                                    onClick={() => deleteMedia(track)}
-                                    className="text-red-400 hover:text-red-500 p-2 hover:bg-red-500/10 rounded-lg transition-colors"
-                                >
-                                    ✕
-                                </button>
-                            </div>
-                        ))
-                    )}
-                </div>
-            )}
-
-            {/* Photo Lightbox */}
-            {selectedPhoto && (
-                <div className="modal-overlay" onClick={() => setSelectedPhoto(null)}>
-                    <div className="max-w-4xl max-h-[90vh]" onClick={(e) => e.stopPropagation()}>
-                        <img
-                            src={selectedPhoto.url}
-                            alt={selectedPhoto.name}
-                            className="max-w-full max-h-[80vh] object-contain rounded-2xl"
-                        />
-                        <div className="text-center mt-4">
-                            <p className="text-white font-medium mb-3">{selectedPhoto.name}</p>
-                            <button
-                                onClick={() => setSelectedPhoto(null)}
-                                className="btn-secondary"
-                            >
-                                Close
-                            </button>
+                            ))}
                         </div>
-                    </div>
+                    )
+                )}
+            </div>
+
+            {/* Lightbox */}
+            {selectedPhoto && (
+                <div className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-4" onClick={() => setSelectedPhoto(null)}>
+                    <img src={selectedPhoto.url} alt="" className="max-w-full max-h-[85vh] object-contain" />
+                    <button className="absolute top-6 right-6 text-white/50 hover:text-white" onClick={() => setSelectedPhoto(null)}>✕</button>
                 </div>
             )}
         </div>

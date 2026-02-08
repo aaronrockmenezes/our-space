@@ -8,72 +8,58 @@ export default function Navigation() {
     const pathname = usePathname();
     const { user, signOut } = useAuth();
 
-    const navLinks = [
-        { href: '/', label: 'Home', icon: '🏠' },
-        { href: '/gallery', label: 'Gallery', icon: '📸' },
-        { href: '/calendar', label: 'Calendar', icon: '📅' },
-        { href: '/notes', label: 'Notes', icon: '💌' },
-    ];
-
     if (!user) return null;
 
+    const navLinks = [
+        { href: '/', icon: '🏠' },
+        { href: '/gallery', icon: '📸' },
+        { href: '/calendar', icon: '📅' },
+        { href: '/notes', icon: '💌' },
+    ];
+
     return (
-        <nav className="glass-nav fixed top-0 left-0 right-0 z-50">
-            <div className="max-w-7xl mx-auto px-6 py-4">
-                <div className="flex items-center justify-between">
-                    {/* Logo */}
-                    <Link href="/" className="flex items-center gap-3 group">
-                        <span className="text-2xl group-hover:scale-110 transition-transform">💕</span>
-                        <span className="text-white font-medium text-lg hidden sm:block">
-                            Our Space
-                        </span>
+        <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[#0a0a0f]/90 backdrop-blur-xl border-t border-white/[0.05] md:top-0 md:bottom-auto md:border-t-0 md:border-b">
+            <div className="max-w-2xl mx-auto px-6">
+                <div className="flex items-center justify-between h-14">
+                    {/* Desktop Logo */}
+                    <Link href="/" className="hidden md:flex items-center gap-2">
+                        <span className="text-lg">💕</span>
+                        <span className="text-white/60 text-sm font-medium">Our Space</span>
                     </Link>
 
-                    {/* Nav Links - Desktop */}
-                    <div className="hidden md:flex items-center gap-1">
+                    {/* Nav Links */}
+                    <div className="flex items-center justify-around w-full md:w-auto md:gap-6">
                         {navLinks.map((link) => (
                             <Link
                                 key={link.href}
                                 href={link.href}
-                                className={`nav-item ${pathname === link.href ? 'active' : ''}`}
+                                className={`p-3 rounded-full transition-all duration-200 ${pathname === link.href
+                                        ? 'bg-white/10'
+                                        : 'hover:bg-white/5'
+                                    }`}
                             >
-                                <span>{link.icon}</span>
-                                <span>{link.label}</span>
+                                <span className={`text-lg ${pathname === link.href ? 'opacity-100' : 'opacity-50'}`}>
+                                    {link.icon}
+                                </span>
                             </Link>
                         ))}
                     </div>
 
-                    {/* User Menu */}
-                    <div className="flex items-center gap-4">
+                    {/* User & Sign Out - Desktop */}
+                    <div className="hidden md:flex items-center gap-4">
                         {user.photoURL && (
                             <img
                                 src={user.photoURL}
-                                alt={user.displayName || 'User'}
-                                className="w-9 h-9 rounded-full border-2 border-[var(--border-subtle)] hover:border-[var(--accent-gold)] transition-colors"
+                                alt=""
+                                className="w-7 h-7 rounded-full opacity-60"
                             />
                         )}
                         <button
                             onClick={signOut}
-                            className="btn-secondary text-sm py-2 px-4"
+                            className="text-white/30 text-xs hover:text-white/50 transition-colors"
                         >
-                            Sign Out
+                            Sign out
                         </button>
-                    </div>
-
-                    {/* Mobile Nav */}
-                    <div className="md:hidden flex items-center gap-1">
-                        {navLinks.map((link) => (
-                            <Link
-                                key={link.href}
-                                href={link.href}
-                                className={`p-2.5 rounded-lg transition-colors ${pathname === link.href
-                                        ? 'bg-[var(--accent-gold)]/20 text-[var(--accent-gold)]'
-                                        : 'text-[var(--text-muted)] hover:text-white'
-                                    }`}
-                            >
-                                <span className="text-lg">{link.icon}</span>
-                            </Link>
-                        ))}
                     </div>
                 </div>
             </div>

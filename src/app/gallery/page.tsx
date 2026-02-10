@@ -5,27 +5,21 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { collection, addDoc, query, orderBy, getDocs, deleteDoc, doc } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { db, storage } from '@/lib/firebase';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Camera, Upload, X, Trash2, Maximize2, Calendar as CalendarIcon, Plus } from 'lucide-react';
+import { Camera, Upload, X, Trash2, Maximize2, Calendar as CalendarIcon, Plus, Play } from 'lucide-react';
 import { format, parseISO, startOfMonth, endOfMonth, isWithinInterval } from 'date-fns';
 
 interface MediaItem {
     id: string;
     url: string;
     name: string;
-    type: 'image' | 'audio';
+    type: 'image' | 'video';
     uploadedAt: any; // Firestore Timestamp
 }
 
-const fileToBase64 = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result as string);
-        reader.onerror = error => reject(error);
-    });
-};
+
 
 export default function GalleryPage() {
     const { user, loading } = useAuth();
@@ -52,25 +46,37 @@ export default function GalleryPage() {
     const loadMedia = async () => {
         const snapshot = await getDocs(query(collection(db, 'media'), orderBy('uploadedAt', 'desc')));
         const items = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as MediaItem));
-        // Filter out music if any existed previously, strict photo only
-        setPhotos(items.filter(i => i.type === 'image'));
+        setPhotos(items);
     };
 
     const onDrop = useCallback(async (files: File[]) => {
         if (!user) return;
         setUploading(true);
-        for (const file of files) {
-            if (file.size > 5 * 1024 * 1024) continue; // 5MB limit
-            const base64 = await fileToBase64(file);
-            await addDoc(collection(db, 'media'), {
-                url: base64,
-                name: file.name,
-                type: 'image',
-                uploadedAt: new Date(),
-                uploadedBy: user.uid,
-            });
+        try {
+            for (const file of files) {
+                if (file.size > 50 * 1024 * 1024) {
+                    alert(`File ${file.name} is too large (max 50MB)`);
+                    continue;
+                }
+
+                const storageRef = ref(storage, `media/${user.uid}/${Date.now()}_${file.name}`);
+                await uploadBytes(storageRef, file);
+                const url = await getDownloadURL(storageRef);
+                const isVideo = file.type.startsWith('video/');
+
+                await addDoc(collection(db, 'media'), {
+                    url,
+                    name: file.name,
+                    type: isVideo ? 'video' : 'image',
+                    uploadedAt: new Date(),
+                    uploadedBy: user.uid,
+                });
+            }
+            await loadMedia();
+        } catch (error) {
+            console.error('Upload failed:', error);
+            alert('Upload failed! Please try again.');
         }
-        await loadMedia();
         setUploading(false);
         setShowUpload(false);
     }, [user]);
@@ -84,8 +90,11 @@ export default function GalleryPage() {
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         onDrop,
-        accept: { 'image/*': [] },
-        maxSize: 5 * 1024 * 1024,
+        accept: {
+            'image/*': [],
+            'video/*': []
+        },
+        maxSize: 50 * 1024 * 1024,
     });
 
     // Grouping Logic
@@ -263,8 +272,30 @@ export default function GalleryPage() {
                                                     className="break-inside-avoid relative group rounded-2xl overflow-hidden cursor-zoom-in bg-white/[0.02] border border-white/10 hover:border-white/20 transition-colors"
                                                     onClick={() => setSelectedPhoto(p)}
                                                 >
-                                                    <img src={p.url} alt={p.name} className="w-full h-auto object-cover" loading="lazy" />
-
+                                                    <div className="absolute inset-0">
+                                                        {p.type === 'video' ? (
+                                                            <video
+                                                                src={p.url}
+                                                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                                                muted
+                                                                loop
+                                                                playsInline
+                                                            />
+                                                        ) : (
+                                                            <img
+                                                                src={p.url}
+                                                                alt={p.name}
+                                                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                                                loading="lazy"
+                                                            />
+                                                        )}
+                                                        {p.type === 'video' && (
+                                                            <div className="absolute top-2 right-2 w-8 h-8 bg-black/50 backdrop-blur-md rounded-full flex items-center justify-center">
+                                                                <Play className="w-3 h-3 text-white fill-white" />
+                                                            </div>
+                                                        )}
+                                                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                                                    </div>
                                                     {/* Hover Overlay */}
                                                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3">
                                                         <button

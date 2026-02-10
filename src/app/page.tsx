@@ -72,7 +72,7 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] relative overflow-hidden flex flex-col justify-center items-center pt-40 pb-24 md:pt-48 md:pb-32 px-6 md:px-20">
+    <div className="min-h-screen bg-[#0a0a0f] relative overflow-hidden flex flex-col justify-center items-center pt-40 pb-24 md:pt-48 md:pb-32 px-8 md:px-16">
       {/* Aurora Background Effect */}
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-purple-900/20 rounded-full blur-[120px] mix-blend-screen animate-blob" />
@@ -86,7 +86,7 @@ export default function HomePage() {
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="relative z-10 w-full max-w-7xl mx-auto px-6 flex flex-col items-center"
+        className="relative z-10 w-full max-w-5xl mx-auto flex flex-col items-center"
       >
         {/* Hero Section */}
         <motion.div variants={itemVariants} className="text-center mb-32 relative">
@@ -95,7 +95,7 @@ export default function HomePage() {
           </div>
 
           <h1 className="text-7xl md:text-9xl font-medium text-white mb-8 tracking-tighter leading-none font-serif">
-            <span className="bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-white/40">Forever Us</span>
+            <span className="bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-white/40">Love of my Life</span>
             <span className="text-rose-500/80 text-6xl md:text-8xl align-top ml-2">.</span>
           </h1>
 

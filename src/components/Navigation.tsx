@@ -22,8 +22,8 @@ export default function Navigation() {
     return (
         <>
             {/* Desktop Navigation - Professional & Spacious */}
-            <header className="hidden md:flex fixed top-0 left-0 right-0 z-50 h-20 items-center px-10 bg-[#0a0a0f]/60 backdrop-blur-xl border-b border-white/[0.05] transition-all duration-300">
-                <div className="w-full max-w-[1400px] mx-auto flex items-center justify-between">
+            <header className="hidden md:flex fixed top-0 left-0 right-0 z-50 h-20 items-center px-8 md:px-12 bg-[#0a0a0f]/60 backdrop-blur-xl border-b border-white/[0.05] transition-all duration-300">
+                <div className="w-full max-w-5xl mx-auto flex items-center justify-between">
 
                     {/* Logo Section - Left */}
                     <Link href="/" className="flex items-center gap-4 group shrink-0 min-w-[200px]">
@@ -32,7 +32,7 @@ export default function Navigation() {
                             <div className="absolute inset-0 bg-white/5 rounded-xl blur-lg -z-10 group-hover:bg-white/10 transition-all" />
                         </div>
                         <div className="flex flex-col">
-                            <span className="text-white text-[15px] font-medium tracking-wide">Forever Us</span>
+                            <span className="text-white text-[15px] font-medium tracking-wide">Love of my Life</span>
                             <span className="text-white/40 text-[10px] uppercase tracking-[0.2em]">Since 2022</span>
                         </div>
                     </Link>

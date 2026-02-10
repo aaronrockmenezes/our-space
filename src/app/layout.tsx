@@ -5,7 +5,7 @@ import { ThemeProvider } from "@/contexts/ThemeContext";
 import Navigation from "@/components/Navigation";
 
 export const metadata: Metadata = {
-  title: "Our Space 💕",
+  title: "Love of my Life 💕",
   description: "A special place for us",
 };
 

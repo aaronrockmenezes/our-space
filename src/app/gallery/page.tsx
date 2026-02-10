@@ -138,7 +138,7 @@ export default function GalleryPage() {
     }
 
     return (
-        <div className="min-h-screen bg-[#0a0a0f] text-white pt-24 pb-20 relative">
+        <div className="min-h-screen bg-[#0a0a0f] text-white pt-48 pb-32 relative">
             {/* Aurora Background Effect */}
             <div className="fixed inset-0 pointer-events-none">
                 <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-purple-900/10 rounded-full blur-[120px] mix-blend-screen animate-blob" />
@@ -146,7 +146,7 @@ export default function GalleryPage() {
                 <div className="absolute bottom-[-20%] left-[20%] w-[50%] h-[50%] bg-indigo-900/10 rounded-full blur-[120px] mix-blend-screen animate-blob animation-delay-4000" />
             </div>
 
-            <div className="max-w-6xl mx-auto px-6 md:px-20 relative z-10">
+            <div className="max-w-5xl mx-auto px-8 md:px-16 relative z-10">
 
                 {/* Header & Controls */}
                 <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">

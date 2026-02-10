@@ -4,6 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isToday, isSameDay, addMonths, subMonths } from 'date-fns';
+import { toZonedTime } from 'date-fns-tz';
 import { collection, query, getDocs, addDoc, deleteDoc, doc, Timestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 
@@ -17,7 +18,7 @@ interface CalendarEvent {
 export default function CalendarPage() {
     const { user, loading } = useAuth();
     const router = useRouter();
-    const [month, setMonth] = useState(new Date());
+    const [month, setMonth] = useState(() => toZonedTime(new Date(), 'Asia/Kolkata'));
     const [events, setEvents] = useState<CalendarEvent[]>([]);
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
     const [newTitle, setNewTitle] = useState('');

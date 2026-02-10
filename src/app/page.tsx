@@ -7,25 +7,32 @@ import Link from 'next/link';
 import { collection, query, orderBy, limit, getDocs, where } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { differenceInDays, differenceInMonths, differenceInYears } from 'date-fns';
+import { toZonedTime } from 'date-fns-tz';
 import { motion } from 'framer-motion';
 import { Camera, Calendar, Heart, ArrowRight } from 'lucide-react';
 
-const RELATIONSHIP_START_DATE = new Date('2022-11-05');
+const IST_TIMEZONE = 'Asia/Kolkata';
+const START_DATE_ISO = '2022-11-05T00:00:00+05:30'; // Explicit IST Offset
 
 export default function HomePage() {
   const { user, loading } = useAuth();
   const router = useRouter();
   const [recentPhotos, setRecentPhotos] = useState<any[]>([]);
 
-  // Calculate duration
+  // Calculate duration in IST
   const now = new Date();
-  const years = differenceInYears(now, RELATIONSHIP_START_DATE);
-  const months = differenceInMonths(now, RELATIONSHIP_START_DATE) % 12;
-  const tempDate = new Date(RELATIONSHIP_START_DATE);
+  const nowIST = toZonedTime(now, IST_TIMEZONE);
+  const startIST = toZonedTime(START_DATE_ISO, IST_TIMEZONE);
+
+  const years = differenceInYears(nowIST, startIST);
+  const months = differenceInMonths(nowIST, startIST) % 12;
+
+  const tempDate = new Date(startIST);
   tempDate.setFullYear(tempDate.getFullYear() + years);
   tempDate.setMonth(tempDate.getMonth() + months);
-  const days = differenceInDays(now, tempDate);
-  const totalDays = differenceInDays(now, RELATIONSHIP_START_DATE);
+
+  const days = differenceInDays(nowIST, tempDate);
+  const totalDays = differenceInDays(nowIST, startIST);
 
   useEffect(() => {
     if (!loading && !user) router.push('/login');

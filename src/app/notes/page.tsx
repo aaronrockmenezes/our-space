@@ -113,7 +113,7 @@ export default function NotesPage() {
                 <div className="hidden md:block absolute left-1/2 translate-x-[320px] top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-white/[0.04] to-transparent" />
 
                 {/* Messages area */}
-                <div className="w-full max-w-[600px] px-6 pb-48 pt-6">
+                <div className="w-full max-w-[600px] px-6 md:px-12 pb-48 pt-6">
                     {notes.length === 0 ? (
                         <div className="text-center py-24">
                             <div className="w-20 h-20 mx-auto mb-6 rounded-3xl bg-white/[0.02] border border-white/[0.04] flex items-center justify-center rotate-3">
@@ -167,7 +167,7 @@ export default function NotesPage() {
             {/* Compose - Static at bottom */}
             <div className="w-full shrink-0 z-[100] bg-[#050508] border-t border-white/[0.05]">
                 <div className="pb-8 pt-4 md:pb-8 flex justify-center">
-                    <div className="w-full max-w-[600px] px-6">
+                    <div className="w-full max-w-[600px] px-6 md:px-12">
                         <div className="flex items-end gap-3 bg-[#121217] border border-white/10 rounded-3xl p-2.5 shadow-xl shadow-black/50 transition-transform duration-300 focus-within:border-white/20 ring-1 ring-white/5">
                             <textarea
                                 ref={textareaRef}

@@ -72,7 +72,7 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] relative overflow-hidden flex flex-col justify-center items-center pt-40 pb-24 md:pt-48 md:pb-32 px-6">
+    <div className="min-h-screen bg-[#0a0a0f] relative overflow-hidden flex flex-col justify-center items-center pt-40 pb-24 md:pt-48 md:pb-32 px-6 md:px-20">
       {/* Aurora Background Effect */}
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-purple-900/20 rounded-full blur-[120px] mix-blend-screen animate-blob" />

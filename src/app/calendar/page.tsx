@@ -78,7 +78,7 @@ export default function CalendarPage() {
         <div className="min-h-screen bg-[#0a0a0f] pb-12">
             {/* Header Spacer */}
             <div className="w-full h-[180px]" />
-            <div className="w-full max-w-6xl mx-auto px-6">
+            <div className="w-full max-w-6xl mx-auto px-6 md:px-20">
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
                     {/* Left Column: Calendar Grid (Takes up 2/3 space) */}

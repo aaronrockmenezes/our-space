@@ -146,7 +146,7 @@ export default function GalleryPage() {
                 <div className="absolute bottom-[-20%] left-[20%] w-[50%] h-[50%] bg-indigo-900/10 rounded-full blur-[120px] mix-blend-screen animate-blob animation-delay-4000" />
             </div>
 
-            <div className="max-w-6xl mx-auto px-8 relative z-10">
+            <div className="max-w-6xl mx-auto px-6 md:px-20 relative z-10">
 
                 {/* Header & Controls */}
                 <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
@@ -156,21 +156,27 @@ export default function GalleryPage() {
                     </div>
 
                     <div className="flex items-center gap-4 bg-white/[0.03] border border-white/[0.08] p-2 rounded-2xl backdrop-blur-sm">
-                        <div className="flex items-center gap-2 px-4 py-2 border-r border-white/10">
+                        <div className="flex items-center gap-4 px-4 py-2">
                             <CalendarIcon className="w-4 h-4 text-white/40" />
-                            <input
-                                type="month"
-                                className="bg-transparent border-none text-xs text-white/80 focus:ring-0 [&::-webkit-calendar-picker-indicator]:invert-[0.5] cursor-pointer"
-                                value={dateRange.start}
-                                onChange={(e) => setDateRange(prev => ({ ...prev, start: e.target.value }))}
-                            />
-                            <span className="text-white/20">-</span>
-                            <input
-                                type="month"
-                                className="bg-transparent border-none text-xs text-white/80 focus:ring-0 [&::-webkit-calendar-picker-indicator]:invert-[0.5] cursor-pointer"
-                                value={dateRange.end}
-                                onChange={(e) => setDateRange(prev => ({ ...prev, end: e.target.value }))}
-                            />
+                            <div className="flex items-center gap-2">
+                                <span className="text-[10px] uppercase tracking-wider text-white/40 font-medium">From</span>
+                                <input
+                                    type="month"
+                                    className="bg-transparent border-none text-xs text-white/80 focus:ring-0 [&::-webkit-calendar-picker-indicator]:invert-[0.5] cursor-pointer p-0"
+                                    value={dateRange.start}
+                                    onChange={(e) => setDateRange(prev => ({ ...prev, start: e.target.value }))}
+                                />
+                            </div>
+                            <span className="text-white/20">|</span>
+                            <div className="flex items-center gap-2">
+                                <span className="text-[10px] uppercase tracking-wider text-white/40 font-medium">To</span>
+                                <input
+                                    type="month"
+                                    className="bg-transparent border-none text-xs text-white/80 focus:ring-0 [&::-webkit-calendar-picker-indicator]:invert-[0.5] cursor-pointer p-0"
+                                    value={dateRange.end}
+                                    onChange={(e) => setDateRange(prev => ({ ...prev, end: e.target.value }))}
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -180,7 +186,7 @@ export default function GalleryPage() {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => setShowUpload(!showUpload)}
-                    className="fixed bottom-8 right-8 z-50 w-16 h-16 rounded-full bg-gradient-to-tr from-rose-500 to-purple-600 text-white shadow-2xl shadow-rose-500/30 flex items-center justify-center border border-white/20 backdrop-blur-md"
+                    className="fixed bottom-24 right-8 z-50 w-16 h-16 rounded-full bg-gradient-to-tr from-rose-500 to-purple-600 text-white shadow-2xl shadow-rose-500/30 flex items-center justify-center border border-white/20 backdrop-blur-md"
                 >
                     {showUpload ? <X className="w-8 h-8" /> : <Plus className="w-8 h-8" />}
                 </motion.button>

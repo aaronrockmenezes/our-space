@@ -23,6 +23,7 @@ export default function NotesPage() {
     const [newNote, setNewNote] = useState('');
     const [sending, setSending] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
 
     useEffect(() => {
         if (!loading && !user) router.push('/login');
@@ -31,6 +32,13 @@ export default function NotesPage() {
     useEffect(() => {
         if (user) loadNotes();
     }, [user]);
+
+    useEffect(() => {
+        if (textareaRef.current) {
+            textareaRef.current.style.height = 'auto';
+            textareaRef.current.style.height = Math.min(textareaRef.current.scrollHeight, 140) + 'px';
+        }
+    }, [newNote]);
 
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -162,11 +170,17 @@ export default function NotesPage() {
                     <div className="w-full max-w-[600px] px-6">
                         <div className="flex items-end gap-3 bg-[#121217] border border-white/10 rounded-3xl p-2.5 shadow-xl shadow-black/50 transition-transform duration-300 focus-within:border-white/20 ring-1 ring-white/5">
                             <textarea
+                                ref={textareaRef}
                                 value={newNote}
                                 onChange={e => setNewNote(e.target.value)}
-                                onKeyPress={handleKeyPress}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                        e.preventDefault();
+                                        sendNote();
+                                    }
+                                }}
                                 placeholder="Write a love note..."
-                                className="flex-1 bg-transparent px-4 py-3 min-h-[52px] max-h-[140px] text-white text-[15px] resize-none focus:outline-none placeholder:text-white/20 placeholder:font-medium"
+                                className="flex-1 bg-transparent px-4 py-3 min-h-[52px] max-h-[140px] text-white text-[15px] resize-none focus:outline-none placeholder:text-white/20 placeholder:font-medium overflow-hidden [overflow-wrap:anywhere]"
                                 rows={1}
                                 maxLength={500}
                             />

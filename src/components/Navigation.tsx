@@ -131,24 +131,26 @@ export default function Navigation() {
                 </div>
             </header>
 
-            {/* Mobile Navigation */}
-            <nav className="md:hidden fixed bottom-6 left-6 right-6 z-50">
-                <div className="bg-[#121217]/90 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-2xl flex items-center justify-between px-6 py-4">
+            {/* Mobile Navigation - Hidden on Notes page to avoid keyboard conflict */}
+            <nav className={`md:hidden fixed bottom-6 left-6 right-6 z-50 ${pathname === '/notes' ? 'hidden' : ''}`}>
+                <div className="bg-[#121217]/90 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-2xl flex items-center justify-around px-2 py-3">
                     {navLinks.map((link) => {
                         const isActive = pathname === link.href;
                         return (
                             <Link
                                 key={link.href}
                                 href={link.href}
-                                className={`flex flex-col items-center gap-1 transition-all duration-300 relative ${isActive ? 'text-white scale-105' : 'text-white/40'}`}
+                                className={`flex flex-col items-center justify-center gap-1 transition-all duration-300 relative px-3 py-2 rounded-xl min-w-[60px] ${isActive ? 'bg-white/10 text-white transform -translate-y-1 shadow-lg shadow-white/5' : 'text-white/40 hover:bg-white/5'}`}
                             >
-                                <span className="text-xl filter drop-shadow-md">
+                                <span className="text-lg filter drop-shadow-md">
                                     {link.href === '/' && '🏠'}
                                     {link.href === '/gallery' && '📸'}
                                     {link.href === '/calendar' && '📅'}
                                     {link.href === '/notes' && '💌'}
                                 </span>
-                                {isActive && <span className="absolute -bottom-2 w-1 h-1 bg-white rounded-full shadow-[0_0_5px_white]" />}
+                                <span className={`text-[10px] font-medium tracking-wide ${isActive ? 'opacity-100' : 'opacity-70'}`}>
+                                    {link.label}
+                                </span>
                             </Link>
                         );
                     })}

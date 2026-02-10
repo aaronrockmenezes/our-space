@@ -32,7 +32,7 @@ export default function Navigation() {
                             <div className="absolute inset-0 bg-white/5 rounded-xl blur-lg -z-10 group-hover:bg-white/10 transition-all" />
                         </div>
                         <div className="flex flex-col">
-                            <span className="text-white text-[15px] font-medium tracking-wide">Our Space</span>
+                            <span className="text-white text-[15px] font-medium tracking-wide">Forever Us</span>
                             <span className="text-white/40 text-[10px] uppercase tracking-[0.2em]">Since 2022</span>
                         </div>
                     </Link>

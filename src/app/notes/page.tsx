@@ -4,6 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState, useRef } from 'react';
 import { format } from 'date-fns';
+import { ArrowLeft } from 'lucide-react';
 import { collection, query, orderBy, getDocs, addDoc, deleteDoc, doc, Timestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 
@@ -82,9 +83,17 @@ export default function NotesPage() {
     return (
         <div className="h-screen bg-[#0a0a0f] flex flex-col overflow-hidden" style={{ paddingTop: '5rem' }}>
             {/* Header - Fixed Height */}
-            <div className="text-center py-4 shrink-0 relative z-10 bg-[#0a0a0f]/90 backdrop-blur-sm border-b border-white/[0.03]">
-                <h1 className="text-2xl font-bold text-white mb-1 tracking-tight">Love Notes</h1>
-                <p className="text-white/40 text-xs font-medium">Leave sweet messages for each other</p>
+            <div className="relative z-10 bg-[#0a0a0f]/90 backdrop-blur-sm border-b border-white/[0.03] py-4">
+                <button
+                    onClick={() => router.push('/')}
+                    className="md:hidden absolute left-4 top-1/2 -translate-y-1/2 p-2 text-white/60 hover:text-white bg-white/5 rounded-full"
+                >
+                    <ArrowLeft className="w-5 h-5" />
+                </button>
+                <div className="text-center">
+                    <h1 className="text-2xl font-bold text-white mb-1 tracking-tight">Love Notes</h1>
+                    <p className="text-white/40 text-xs font-medium">Leave sweet messages for each other</p>
+                </div>
             </div>
 
             {/* Messages Container with vertical demarcation lines (desktop only) */}
@@ -96,7 +105,7 @@ export default function NotesPage() {
                 <div className="hidden md:block absolute left-1/2 translate-x-[320px] top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-white/[0.04] to-transparent" />
 
                 {/* Messages area */}
-                <div className="w-full max-w-[600px] px-6 pb-4 pt-6">
+                <div className="w-full max-w-[600px] px-6 pb-48 pt-6">
                     {notes.length === 0 ? (
                         <div className="text-center py-24">
                             <div className="w-20 h-20 mx-auto mb-6 rounded-3xl bg-white/[0.02] border border-white/[0.04] flex items-center justify-center rotate-3">
@@ -118,12 +127,7 @@ export default function NotesPage() {
                                                 } border rounded-2xl ${mine ? 'rounded-br-sm' : 'rounded-bl-sm'} !px-6 !py-4 transition-all duration-300 shadow-lg shadow-black/20`}
                                         >
                                             <p
-                                                className="text-white/95 text-[15px] leading-relaxed select-text font-normal text-left"
-                                                style={{
-                                                    wordBreak: 'break-word',
-                                                    overflowWrap: 'anywhere',
-                                                    whiteSpace: 'pre-wrap'
-                                                }}
+                                                className="text-white/95 text-[15px] leading-relaxed select-text font-normal text-left [overflow-wrap:anywhere] whitespace-pre-wrap"
                                             >
                                                 {note.content}
                                             </p>

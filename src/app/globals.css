@@ -722,6 +722,9 @@ h6 {
 }
 
 /* Glow Text */
-.glow-text {
-  text-shadow: 0 0 40px rgba(212, 165, 116, 0.3);
+
+/* Hide Next.js Dev Overlay */
+nextjs-portal,
+div[data-nextjs-toast] {
+  display: none !important;
 }

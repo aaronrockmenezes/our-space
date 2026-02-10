@@ -91,11 +91,11 @@ export default function HomePage() {
         {/* Hero Section */}
         <motion.div variants={itemVariants} className="text-center mb-32 relative">
           <div className="inline-block mb-6 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-md">
-            <span className="text-white/60 text-xs font-medium tracking-[0.2em] uppercase">Est. November 5, 2022</span>
+            <span className="text-white/60 text-xs font-medium tracking-[0.2em] uppercase">Together since November 5, 2022</span>
           </div>
 
           <h1 className="text-7xl md:text-9xl font-medium text-white mb-8 tracking-tighter leading-none font-serif">
-            <span className="bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-white/40">Our Space</span>
+            <span className="bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-white/40">Forever Us</span>
             <span className="text-rose-500/80 text-6xl md:text-8xl align-top ml-2">.</span>
           </h1>
 
@@ -125,59 +125,49 @@ export default function HomePage() {
         {/* Quick Actions Grid */}
         <motion.div
           variants={itemVariants}
-          className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-6xl mb-32 px-4"
+          className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl mb-32 px-4"
         >
           {[
             {
               href: '/gallery',
               icon: Camera,
               label: 'Gallery',
-              desc: 'Our timeline',
-              color: 'text-blue-400',
-              bg: 'bg-blue-500/10',
-              border: 'group-hover:border-blue-500/30'
+              desc: 'Our Timeline',
+              gradient: 'from-blue-400/50 to-cyan-400/50'
             },
             {
               href: '/calendar',
               icon: Calendar,
               label: 'Calendar',
-              desc: 'Our plans',
-              color: 'text-amber-400',
-              bg: 'bg-amber-500/10',
-              border: 'group-hover:border-amber-500/30'
+              desc: 'Our Plans',
+              gradient: 'from-amber-400/50 to-orange-400/50'
             },
             {
               href: '/notes',
               icon: Heart,
               label: 'Love Notes',
-              desc: 'Our letters',
-              color: 'text-rose-400',
-              bg: 'bg-rose-500/10',
-              border: 'group-hover:border-rose-500/30'
+              desc: 'Our Letters',
+              gradient: 'from-rose-400/50 to-pink-400/50'
             },
           ].map((item, i) => (
             <Link key={item.href} href={item.href} className="block group">
               <motion.div
                 whileHover={{ y: -5 }}
-                transition={{ duration: 0.4, ease: "easeOut" }}
-                className={`relative h-[280px] bg-[#121217]/30 backdrop-blur-md border border-white/[0.05] ${item.border} rounded-[2rem] p-8 flex flex-col justify-between transition-all duration-500 overflow-hidden hover:bg-white/[0.02] hover:shadow-2xl hover:shadow-black/50`}
+                className="relative h-[260px] bg-white/[0.02] backdrop-blur-sm border border-white/[0.05] rounded-[2rem] p-8 flex flex-col items-center justify-center text-center transition-all duration-500 hover:bg-white/[0.04] hover:border-white/[0.1] hover:shadow-2xl hover:shadow-black/20"
               >
-                {/* Hover Gradient Blob */}
-                <div className={`absolute -right-20 -top-20 w-60 h-60 rounded-full ${item.bg} blur-[80px] opacity-0 group-hover:opacity-40 transition-opacity duration-700 pointer-events-none`} />
-
-                <div>
-                  <div className={`w-14 h-14 rounded-2xl ${item.bg} flex items-center justify-center mb-6 border border-white/5 group-hover:scale-105 transition-transform duration-700 ease-out`}>
-                    <item.icon className={`w-7 h-7 text-white`} strokeWidth={1.5} />
+                {/* Centered Icon with Gradient Ring */}
+                <div className={`w-16 h-16 rounded-full bg-gradient-to-tr ${item.gradient} p-[1px] mb-6 group-hover:scale-110 transition-transform duration-500`}>
+                  <div className="w-full h-full rounded-full bg-[#0a0a0f] flex items-center justify-center">
+                    <item.icon className="w-6 h-6 text-white/90" strokeWidth={1.5} />
                   </div>
-                  <h3 className="text-3xl font-serif text-white mb-2 tracking-wide group-hover:translate-x-1 transition-transform duration-500">{item.label}</h3>
-                  <p className="text-white/40 font-medium tracking-wide text-sm uppercase group-hover:text-white/60 transition-colors duration-500">{item.desc}</p>
                 </div>
 
-                <div className="flex items-center justify-between mt-8 border-t border-white/5 pt-6 group-hover:border-white/10 transition-colors duration-500">
-                  <span className="text-white/30 text-xs font-semibold tracking-widest uppercase group-hover:text-white/60 transition-colors duration-500">Explore</span>
-                  <div className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-white group-hover:border-white transition-all duration-500">
-                    <ArrowRight className="w-4 h-4 text-white group-hover:text-black transition-colors duration-500" />
-                  </div>
+                <h3 className="text-3xl font-serif text-white mb-2 tracking-wide">{item.label}</h3>
+                <p className="text-white/40 text-xs font-medium uppercase tracking-[0.2em]">{item.desc}</p>
+
+                {/* Subtle Hover Indicator */}
+                <div className="mt-6 text-white/10 group-hover:text-white/30 transition-colors duration-500">
+                  <ArrowRight className="w-5 h-5 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-500" />
                 </div>
               </motion.div>
             </Link>

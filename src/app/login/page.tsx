@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
 export default function LoginPage() {
-    const { user, loading, signInWithGoogle } = useAuth();
+    const { user, loading, signInWithGoogle, error } = useAuth();
     const router = useRouter();
 
     useEffect(() => {
@@ -41,6 +41,16 @@ export default function LoginPage() {
                         A place just for us
                     </p>
                 </div>
+
+                {/* Error Alert */}
+                {error && (
+                    <div className="mb-8 p-4 rounded-xl bg-red-500/10 border border-red-500/20 backdrop-blur-md">
+                        <div className="flex items-center gap-3 text-red-200">
+                            <span className="text-xl">🚫</span>
+                            <span className="text-sm font-medium">{error}</span>
+                        </div>
+                    </div>
+                )}
 
                 {/* Minimal quote */}
                 <p className="text-white/30 text-sm italic mb-12 font-light">
